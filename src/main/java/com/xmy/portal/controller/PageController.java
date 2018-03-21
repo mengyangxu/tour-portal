@@ -27,6 +27,11 @@ public class PageController {
         return "index";
     }
 
+    @RequestMapping("/my")
+    public String my(){
+        return "my";
+    }
+
     @RequestMapping("/tologin")
     public String login(){
         return "login";
