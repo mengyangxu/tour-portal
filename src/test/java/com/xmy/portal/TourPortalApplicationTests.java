@@ -11,7 +11,7 @@ public class TourPortalApplicationTests {
 
 	@Test
 	public void contextLoads() {
-		System.out.print();
+		System.out.println();
 	}
 
 }
