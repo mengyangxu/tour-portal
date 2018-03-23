@@ -1,7 +1,10 @@
 package com.xmy.portal.service;
 
+import com.xmy.bean.vo.ArticleInfo;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 /**
  * @Description:
@@ -12,4 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface UserService {
     @RequestMapping("/login")
     String login();
+
+    @RequestMapping("/articleInfoList")
+    List<ArticleInfo> getArticleInfo();
+
 }

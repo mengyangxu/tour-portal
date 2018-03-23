@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8"/>
     <title>云游四海</title>
@@ -188,18 +188,23 @@
     </div>
 
     <!--内容列表部分-->
-    <div id="conContainer" style="margin-left: 20px">
-        <div style="width: 70%;">
-            <div>
-                <img src="/img/head/1.jpg" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>
-                <p style="float: left;margin-left: 20px;">your nickname</p>
-                <p style="float: left;margin-left: 20px;">在${地址}发布的</p>
-                <p style="float: left;margin-left: 20px;">171人赞</p>
-                <img src="/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 20px;"/>
-            </div>
-            <div class="文章" style="clear: both;text-indent:30px; margin-left: 50px;">
-                文章内容追枫者语：在最美的季节来京都吧！这里除了满山满院的红枫 还有萌萌哒小动物和禅意无限的宿坊 当然咯关西美食一样也不能少精华
-                一、亲爱的一定要在
+    <div id="conContainer" style="margin-left: 15%">
+        <div style="width: 55%;">
+            <div th:each="info, state: ${list}">
+                <br>
+                <div>
+                    <img th:src="@{'/img/'+${info.headPic}}" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>
+                    <p style="float: left;margin-left: 20px;" th:text="${info.nickname}"></p>
+                    <p style="float: left;margin-left: 20px; color: #D0D0D0;" th:text="'在'+${info.address}+'发布的'"></p>
+                    <p style="float: left;margin-left: 20px; color: #D0D0D0;">171人赞</p>
+                    <img src="/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 20px;"/>
+                </div>
+
+                <div class="文章" style="clear: both;text-indent:30px; margin-left: 50px;">
+                    <p th:text="'标题:'+${info.title}" style="font-size: larger"></p>
+                    <p th:text="${info.content}" style="color:#888888;font-style:oblique;font-size: small;float: left;"></p>
+                    <img src="/img/article/01.jpg">
+                </div>
             </div>
 
         </div>

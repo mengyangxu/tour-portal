@@ -1,9 +1,15 @@
 package com.xmy.portal.controller;
 
 
+import com.xmy.bean.vo.ArticleInfo;
+import com.xmy.portal.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 /**
@@ -12,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class PageController {
 
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("/index")
-    public String index(Model model){
+    public String index(HttpServletRequest request){
         /*Page<Theme> themeAll = postService.findThemeAll(0);
         List<Theme> themeList = themeAll.getContent();
         int number = themeAll.getNumber();
@@ -24,6 +32,8 @@ public class PageController {
         model.addAttribute("total", totalPages);
         model.addAttribute("number", number+1);
         model.addAttribute("themeList", themeList);*/
+        List<ArticleInfo> list = userService.getArticleInfo();
+        request.setAttribute("list", list);
         return "index";
     }
 
