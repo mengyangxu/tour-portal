@@ -11,9 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @Description:
@@ -27,10 +29,9 @@ public class ArticleController {
     @CrossOrigin
     @RequestMapping(value = "/upload")
     @ResponseBody
-    public String uploadFj(HttpServletRequest request) {
+    public String uploadFj(HttpServletRequest request, HttpSession session) {
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-        List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest,
-                "F"+"://"+"plantpictureurl/");
+        List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "F"+"://"+"plantpictureurl/", session);
         Map<String, Object> map = new HashMap<String, Object>();
         try {
             for (UploadFile file : fileList) {

@@ -3,6 +3,7 @@ package com.xmy.portal.utils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.UUID;
  * @Date: Created in 11:01 2018/3/27
  */
 public class UploadUtil {
-    public static List<UploadFile> getUploadFiles(MultipartHttpServletRequest multipartHttpServletRequest, String Path) {
+    public static List<UploadFile> getUploadFiles(MultipartHttpServletRequest multipartHttpServletRequest, String Path, HttpSession session) {
         List<MultipartFile> files = multipartHttpServletRequest
                 .getFiles("files");
         List<UploadFile> fileList = new ArrayList<UploadFile>();
@@ -33,6 +34,8 @@ public class UploadUtil {
                     String fileType = fileName.substring(
                             fileName.lastIndexOf(".") + 1, fileName.length());
                     String id = UUID.randomUUID().toString();
+                    String articlePicString = session.getAttribute("articlePicString").toString();
+                    session.setAttribute("articlePicString",articlePicString+","+id);
                     String targetName = id + "." + fileType;
                     // 文件真实存放路径
                     String filePath = uploadFile.getPath() + File.separator
