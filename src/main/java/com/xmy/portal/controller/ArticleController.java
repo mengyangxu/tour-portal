@@ -30,8 +30,11 @@ public class ArticleController {
     @RequestMapping(value = "/upload")
     @ResponseBody
     public String uploadFj(HttpServletRequest request, HttpSession session) {
+        session.removeAttribute("articlePicString");
+
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-        List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "F"+"://"+"plantpictureurl/", session);
+        List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "D"+"://"+"plantpictureurl/", session);
+        String picString = session.getAttribute("articlePicString").toString();
         Map<String, Object> map = new HashMap<String, Object>();
         try {
             for (UploadFile file : fileList) {

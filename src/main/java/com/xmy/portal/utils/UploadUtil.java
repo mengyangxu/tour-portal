@@ -19,6 +19,7 @@ public class UploadUtil {
         List<MultipartFile> files = multipartHttpServletRequest
                 .getFiles("files");
         List<UploadFile> fileList = new ArrayList<UploadFile>();
+        String articlePicString = "";
         for (MultipartFile file : files) {
             // 取得上传文件
             String fileName = file.getOriginalFilename();
@@ -34,8 +35,12 @@ public class UploadUtil {
                     String fileType = fileName.substring(
                             fileName.lastIndexOf(".") + 1, fileName.length());
                     String id = UUID.randomUUID().toString();
-                    String articlePicString = session.getAttribute("articlePicString").toString();
-                    session.setAttribute("articlePicString",articlePicString+","+id);
+                    if("".equals(articlePicString)){
+                        articlePicString = id;
+                    }else{
+                        articlePicString += articlePicString + "," + id;
+                    }
+
                     String targetName = id + "." + fileType;
                     // 文件真实存放路径
                     String filePath = uploadFile.getPath() + File.separator
@@ -51,6 +56,7 @@ public class UploadUtil {
                 }
             }
         }
+        session.setAttribute("articlePicString",articlePicString);
         return fileList;
     }
 }
