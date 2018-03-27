@@ -1,49 +1,74 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.6/css/bootstrap.min.css"
-          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"
-          rel="stylesheet" media="screen" />
-    <meta charset="utf-8"/>
+    <meta charset="UTF-8"/>
+    <title>云游四海</title>
+    <link rel="shortcut icon" href="//localhost:8081/img/long.jpg"/>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://localhost:8081/css/fileinput.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="http://localhost:8081/js/fileinput.min.js"></script>
+    <script src="http://localhost:8081/js/zh.js"></script>
 </head>
+
 <body>
-<div th:fragment="apk-form">
-    <form  method="post"   class="box-header with-border" action="" th:object="${apkVersion}" id="dataFrom" enctype="multipart/form-data" >
-        <input type="hidden" name ="id" id="id" />
-        <input type="hidden" name ="url" id="url" />
-        <input type="hidden" name ="fileMd5" id="fileMd5" />
-        <input type="hidden" name ="version" id="version" />
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header" style="background: #3c8dbc;">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title" id="myModalLabel">新增</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="form-label col-3">版本说明：</label>
-                            <div class="formControls col-5" >
-                                <textarea name="comment" id="comment" cols="" rows="" class="textarea" style="width: 400px"  placeholder="说点什么...100个字符以内" dragonfly="true" ></textarea>
-                                <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
-                            </div>
-                            <div class="col-4"> </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">上传版本：</label>
-                            <input type="file" name="uploadfile" id="uploadfile" multiple="multiple" class="file-loading" />
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
-                        <input class="btn btn-primary radius" type="button" onclick="save()" value="&nbsp;&nbsp;提交&nbsp;&nbsp;"/>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+<div>
+    <form enctype="multipart/form-data">
+        <label>简体中文</label> <input id="file-zh" name="files" type="file" class="file"
+                                   multiple>
+        <p class="help-block">支持jpg、jpeg、png、gif格式，大小不超过2.0M</p>
     </form>
+
 </div>
+<script type="text/javascript">
+    $(function () {
+        //0.初始化fileinput
+        var oFileInput = new FileInput();
+        oFileInput.Init("file-zh", "http://localhost:8081/uploadFj");
+    });
+
+    //初始化fileinput
+    var FileInput = function () {
+        var oFile = new Object();
+
+        //初始化fileinput控件（第一次初始化）
+        oFile.Init = function(ctrlName, uploadUrl) {
+            var control = $('#' + ctrlName);
+
+            //初始化上传控件的样式
+            control.fileinput({
+                language: 'zh', //设置语言
+                uploadUrl: uploadUrl, //上传的地址
+                allowedFileExtensions: ['jpg', 'gif', 'png'],//接收的文件后缀
+                showUpload: true, //是否显示上传按钮
+                showCaption: false,//是否显示标题
+                browseClass: "btn btn-primary", //按钮样式
+                //dropZoneEnabled: false,//是否显示拖拽区域
+                //minImageWidth: 50, //图片的最小宽度
+                //minImageHeight: 50,//图片的最小高度
+                //maxImageWidth: 1000,//图片的最大宽度
+                //maxImageHeight: 1000,//图片的最大高度
+                //maxFileSize: 0,//单位为kb，如果为0表示不限制文件大小
+                //minFileCount: 0,
+                maxFileCount: 10, //表示允许同时上传的最大文件个数
+                enctype: 'multipart/form-data',
+                validateInitialCount:true,
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            });
+
+            //导入文件上传完成之后的事件
+            $('#file-zh').on('fileuploaded', function(event, data, previewId, index) {
+                var form = data.form, files = data.files, extra = data.extra,
+                    response = data.response, reader = data.reader;
+                console.log(response);//打印出返回的json
+                console.log(response.paths);//打印出路径
+            });
+        }
+        return oFile;
+    };
+
+</script>
 </body>
 </html>

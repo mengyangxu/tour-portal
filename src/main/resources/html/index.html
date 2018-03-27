@@ -4,15 +4,17 @@
     <meta charset="UTF-8"/>
     <title>云游四海</title>
     <link rel="shortcut icon" href="//localhost:8081/img/long.jpg"/>
-    <link rel="stylesheet" href="http://common1.qyerstatic.com/bbs/css/index/index_css_53d4fc9bfbf4dbd64b431fc833571caf.css"/>
-    <link rel="stylesheet" href="http://localhost:8081/qyou.css"/>
 
+    <link rel="stylesheet" href="http://localhost:8081/css/qyou.css">
     <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://localhost:8081/css/fileinput.min.css">
+
     <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <script src="http://common1.qyerstatic.com/bbs/js/index/index_js_f8ba00c79ac9dad62e5635a945850a27.js"></script>
-    <script src="http://static.qyer.com/qyer_ui_frame/m/js/dist/base_beacon_ga.js"></script>
+    <script src="http://localhost:8081/js/fileinput.min.js"></script>
+    <script src="http://localhost:8081/js/zh.js"></script>
+
 </head>
 
 <body style="">
@@ -194,6 +196,7 @@
     <!--内容列表部分-->
     <div id="conContainer" style="margin-left: 15%">
         <div style="width: 55%;">
+
             <div th:each="info, state: ${list}">
                 <br>
                 <div>
@@ -282,6 +285,11 @@
                     <label>内容：</label>
                     <input type="text" id="content">
                 </div>
+
+
+                <input id="file-zh" name="files" type="file" class="file" multiple>
+
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                     </button>
@@ -297,6 +305,54 @@
 
 </div>
 <script type="text/javascript">
+    //轮播图定时器
+    $(".cn-sy li").on("hover",function(){
+        var index = $(this).index();
+        $(".cn-slide").eq(index).addClass("cszdx").siblings().removeClass("cszdx");
+        $(".cnb-wp").eq(index).addClass("bgzdx").siblings().removeClass("bgzdx");
+    });
+
+    var a = $(".cn-sy li");
+    var iNow = 0;
+    var timer = null;
+    timer=setInterval(function(){ //打开定时器
+        iNow++;    //让图片的索引值次序加1，这样就可以实现顺序轮播图片
+        if(iNow>a.length-1){ //当到达最后一张图的时候，让iNow赋值为第一张图的索引值，轮播效果跳转到第一张图重新开始
+            iNow=0;
+        }
+        a.eq(iNow).trigger("hover"); //模拟触发数字按钮的click
+    },2000);
+
+    $(".cn-sy li").mouseenter(function() {
+        var index = $(this).index();
+        $(".cn-slide").eq(index).addClass("cszdx").siblings().removeClass("cszdx");
+        $(".cnb-wp").eq(index).addClass("bgzdx").siblings().removeClass("bgzdx");
+        clearInterval(timer);
+    });
+    $(".cn-sy li").mouseleave(function(){
+        timer=setInterval(function(){ //打开定时器
+            iNow++;    //让图片的索引值次序加1，这样就可以实现顺序轮播图片
+            if(iNow>a.length-1){ //当到达最后一张图的时候，让iNow赋值为第一张图的索引值，轮播效果跳转到第一张图重新开始
+                iNow=0;
+            }
+            a.eq(iNow).trigger("hover"); //模拟触发数字按钮的click
+        },1000);
+    });
+
+
+    //上传文件
+    $("#file-zh").fileinput({
+        uploadUrl: 'http://localhost:8081/upload',
+    });
+    $('#file-zh').on('fileuploaded', function (event, data, previewId, index) {
+        var date = data.jqXHR.responseJSON;
+        alert(date);
+    });
+
+    function shangchuan(){
+        $('#file-zh').fileinput('upload');
+    }
+
     function addArticle(){
         var title = $("#title").val();
         var content = $("#content").val();
