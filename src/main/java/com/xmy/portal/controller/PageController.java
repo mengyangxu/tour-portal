@@ -40,15 +40,7 @@ public class PageController {
         return "my";
     }
 
-    @RequestMapping("/tologin")
-    public String login(){
-        return "login";
-    }
 
-    @RequestMapping("/toregister")
-    public String regist(){
-        return "register";
-    }
 
     @RequestMapping("/toforgot")
     public String forgot(){
