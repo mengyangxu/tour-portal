@@ -16,16 +16,14 @@ public class UserInterceptor implements HandlerInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(UserInterceptor.class);
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        /**
-         * 对来自后台的请求统一进行日志处理
-         */
-        String url = request.getRequestURL().toString();
-        String method = request.getMethod();
-        String uri = request.getRequestURI();
-        String queryString = request.getQueryString();
-        System.out.println(request.getParameterMap());
-        logger.info(String.format("请求参数, url: %s, method: %s, uri: %s, params: %s", url, method, uri, queryString));
-        return true;
+        if(null!=request.getSession().getAttribute("user")){
+            return true;
+        } else {
+            String url = request.getRequestURL().toString();
+            request.getSession().setAttribute("redirectUrl", url);
+            response.sendRedirect("http://localhost:8081/user/tologin");
+            return false;
+        }
     }
 
     @Override

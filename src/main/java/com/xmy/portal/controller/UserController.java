@@ -3,11 +3,14 @@ package com.xmy.portal.controller;
 
 import com.xmy.bean.bean.User;
 import com.xmy.portal.service.UserService;
+import com.xmy.portal.utils.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
@@ -21,17 +24,35 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @RequestMapping("/tologin")
+    public String login(){
+        return "login";
+    }
+
+    @RequestMapping("/toregister")
+    public String regist(){
+        return "register";
+    }
+
     @RequestMapping("/login")
-    public String login(HttpServletRequest request, HttpSession session){
+    @ResponseBody
+    public JsonResponse login(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception{
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        System.out.println(username+"---"+password);
-        String logg = userService.login();
-        System.out.println("logg:"+logg);
-        User user = new User();
-        user.setUsername(username);
-        session.setAttribute("user",user);
-        return "index";
+        User user = userService.login(username, password);
+
+        if(null!=user){
+            session.setAttribute("user",user);
+            if(null!=session.getAttribute("redirectUrl")){
+                String url = session.getAttribute("redirectUrl").toString();
+                return new JsonResponse(url);
+            }else {
+                return  new JsonResponse("http://localhost:8081/index");
+            }
+        }
+        return new JsonResponse(new Exception());
+
+
     }
 
     @RequestMapping("/register")
