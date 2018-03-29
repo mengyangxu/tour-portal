@@ -8,8 +8,13 @@ spring:
 
 server:
   port: 8081
+  connection-timeout: 10000000
 
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+feign:
+  httpclient:
+    connection-timeout: 10000000
+feign

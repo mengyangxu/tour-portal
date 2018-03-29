@@ -14,6 +14,8 @@
 
     <script src="http://localhost:8081/js/fileinput.min.js"></script>
     <script src="http://localhost:8081/js/zh.js"></script>
+    <link rel="stylesheet" href="http://localhost:8081/css/bootstrap-dialog.css">
+    <script src="http://localhost:8081/js/bootstrap-dialog.js"></script>
 
 </head>
 
@@ -357,7 +359,7 @@
         var title = $("#title").val();
         var content = $("#content").val();
         $.ajax({
-            url:'http://localhost:8083/addArticle',
+            url:'http://localhost:8081/addArticle',
             data:{
                 'title': title,
                 'content': content
@@ -375,7 +377,7 @@
             },
             error:function(){
                 $("#toCreateArticle").modal('hide');
-                alert("添加失败");
+                alert("系统出错");
             }
         });
     }

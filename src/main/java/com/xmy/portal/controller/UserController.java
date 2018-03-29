@@ -25,7 +25,10 @@ public class UserController {
     UserService userService;
 
     @RequestMapping("/tologin")
-    public String login(){
+    public String login(HttpSession session){
+        if(null!=session.getAttribute("user")){
+            return "index";
+        }
         return "login";
     }
 
@@ -43,16 +46,9 @@ public class UserController {
 
         if(null!=user){
             session.setAttribute("user",user);
-            if(null!=session.getAttribute("redirectUrl")){
-                String url = session.getAttribute("redirectUrl").toString();
-                return new JsonResponse(url);
-            }else {
-                return  new JsonResponse("http://localhost:8081/index");
-            }
+            return  new JsonResponse("http://localhost:8081/index");
         }
         return new JsonResponse(new Exception());
-
-
     }
 
     @RequestMapping("/register")

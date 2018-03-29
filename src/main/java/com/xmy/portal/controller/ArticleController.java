@@ -1,7 +1,13 @@
 package com.xmy.portal.controller;
 
+import com.netflix.ribbon.proxy.annotation.Http;
+import com.xmy.bean.bean.Article;
+import com.xmy.bean.bean.User;
+import com.xmy.portal.service.UserService;
+import com.xmy.portal.utils.JsonResponse;
 import com.xmy.portal.utils.UploadFile;
 import com.xmy.portal.utils.UploadUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +31,8 @@ import java.util.UUID;
 @Controller
 public class ArticleController {
 
+    @Autowired
+    private UserService userService;
 
     @CrossOrigin
     @RequestMapping(value = "/upload")
@@ -47,6 +55,23 @@ public class ArticleController {
             map.put("meaasge", "failed");
         }
         return "true";
+    }
+
+    @RequestMapping("/addArticle")
+    public JsonResponse addArticle(@RequestParam String title, @RequestParam String content, HttpSession session){
+        User user = (User)session.getAttribute("user");
+        Article article = new Article();
+        if(null==user){
+            return new JsonResponse(new Exception());
+        }
+        article.setUserId(user.getId());
+        if(null!=session.getAttribute("addArticlePics")) {
+            article.setPics(session.getAttribute("addArticlePics").toString());
+        }
+        article.setTitle(title);
+        article.setContent(content);
+        userService.addArticle(article);
+        return new JsonResponse("");
     }
 
 }
