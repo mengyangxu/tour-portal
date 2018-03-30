@@ -7,6 +7,7 @@ import com.xmy.portal.service.UserService;
 import com.xmy.portal.utils.JsonResponse;
 import com.xmy.portal.utils.UploadFile;
 import com.xmy.portal.utils.UploadUtil;
+import feign.Headers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -41,8 +42,9 @@ public class ArticleController {
         session.removeAttribute("articlePicString");
 
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-        List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "D"+"://"+"plantpictureurl/", session);
-        String picString = session.getAttribute("articlePicString").toString();
+        //List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "D"+"://"+"plantpictureurl/", session);
+        //List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "http://localhost:8081/img/upload/", session);
+        List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "C:\\Users\\Administrator\\Downloads\\tour-portal\\src\\main\\resources\\static\\img\\upload/", session);
         Map<String, Object> map = new HashMap<String, Object>();
         try {
             for (UploadFile file : fileList) {
@@ -57,7 +59,10 @@ public class ArticleController {
         return "true";
     }
 
+    //@Headers({"Accept: application/json"})
+    //@Headers({"dataType: json"})
     @RequestMapping("/addArticle")
+    @ResponseBody
     public JsonResponse addArticle(@RequestParam String title, @RequestParam String content, HttpSession session){
         User user = (User)session.getAttribute("user");
         Article article = new Article();
@@ -65,8 +70,8 @@ public class ArticleController {
             return new JsonResponse(new Exception());
         }
         article.setUserId(user.getId());
-        if(null!=session.getAttribute("addArticlePics")) {
-            article.setPics(session.getAttribute("addArticlePics").toString());
+        if(null!=session.getAttribute("articlePicString")) {
+            article.setPics(session.getAttribute("articlePicString").toString());
         }
         article.setTitle(title);
         article.setContent(content);

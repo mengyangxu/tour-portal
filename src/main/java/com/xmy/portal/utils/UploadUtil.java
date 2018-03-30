@@ -35,11 +35,7 @@ public class UploadUtil {
                     String fileType = fileName.substring(
                             fileName.lastIndexOf(".") + 1, fileName.length());
                     String id = UUID.randomUUID().toString();
-                    if("".equals(articlePicString)){
-                        articlePicString = id;
-                    }else{
-                        articlePicString += articlePicString + "," + id;
-                    }
+
 
                     String targetName = id + "." + fileType;
                     // 文件真实存放路径
@@ -51,6 +47,13 @@ public class UploadUtil {
                     UploadFile up = new UploadFile(id, fileName, fileType,
                             fileSize + "", filePath);
                     fileList.add(up);
+
+                    if("".equals(articlePicString)){
+                        articlePicString = targetName;
+                    }else{
+                        articlePicString += articlePicString + "," + targetName;
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
