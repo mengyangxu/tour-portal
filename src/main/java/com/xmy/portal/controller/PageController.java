@@ -1,6 +1,7 @@
 package com.xmy.portal.controller;
 
 
+import com.xmy.bean.bean.User;
 import com.xmy.bean.vo.ArticleInfo;
 import com.xmy.portal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 
@@ -21,22 +23,18 @@ public class PageController {
 
     @RequestMapping("/index")
     public String index(HttpServletRequest request){
-        /*Page<Theme> themeAll = postService.findThemeAll(0);
-        List<Theme> themeList = themeAll.getContent();
-        int number = themeAll.getNumber();
-        int totalPages = themeAll.getTotalPages();
-        long all = themeAll.getTotalElements();
-        model.addAttribute("all", all);
-        model.addAttribute("total", totalPages);
-        model.addAttribute("number", number+1);
-        model.addAttribute("themeList", themeList);*/
         List<ArticleInfo> list = userService.getArticleInfo();
         request.setAttribute("list", list);
         return "index";
     }
 
     @RequestMapping("/my")
-    public String my(){
+    public String my(HttpSession session, HttpServletRequest request){
+        User user = (User)session.getAttribute("user");
+        List<ArticleInfo> list = userService.getArticleInfoById(user.getId());
+        User uu = userService.getById(user.getId());
+        request.setAttribute("list",list);
+        request.setAttribute("user",uu);
         return "my";
     }
 
