@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>云游四海</title>
+    <link rel="shortcut icon" href="//localhost:8081/img/long.jpg"/>
+	<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div>
+	<div >
+		<nav class="navbar navbar-inverse" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">加入我的组织</a>
+				</div>
+				<div>
+					<ul class="nav navbar-nav">
+						<li><a href="http://localhost:8081/index">首页</a></li>
+						<li><a href="http://localhost:8081/my">我的主页</a></li>
+						<li class="dropdown navbar-nav">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								神游伙伴
+								<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu ">
+								<li><a href="http://jiudian.ctrip.cn/">携程</a></li>
+								<li><a href="http://www.tuniu.com/">途牛</a></li>
+								<li><a href="http://www.lvmama.com/">驴妈妈</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<div><p th:inline="text">欢迎你，[[{session?.user?.nickname}]]</p></div>
+			</div>
+		</nav>
+	</div>
+	<div>
+		<div style="width:70%; float:left;">
+			<div th:each="info, state: ${list}">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<h3 class="panel-title" th:="${info.title}"></h3>
+					</div>
+					<div class="panel-body" th:="${info.content}">
+
+					</div>
+				</div>
+			</div>
+
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<h3 class="panel-title">面板标题</h3>
+				</div>
+				<div class="panel-body">
+					这是一个基本的面板
+				</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3 class="panel-title">面板标题</h3>
+				</div>
+				<div class="panel-body">
+					这是一个基本的面板
+				</div>
+			</div>
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">面板标题</h3>
+				</div>
+				<div class="panel-body">
+					这是一个基本的面板
+				</div>
+			</div>
+			<div class="panel panel-warning">
+				<div class="panel-heading">
+					<h3 class="panel-title">面板标题</h3>
+				</div>
+				<div class="panel-body">
+					这是一个基本的面板
+				</div>
+			</div>
+			<div>
+				<ul class="pager">
+					<li><a href="#">Previous</a></li>
+					<li><a href="#">Next</a></li>
+				</ul>
+			</div>
+		</div>
+		<div style="float:right;width:20%; border-color: #398439;" >
+			<div>个人相关资料</div>
+			<div>头像<img src="http://localhost:8081/img/head/1.jpg" class="img-responsive img-circle" alt="个人头像" style="width: 50%;"></div>
+		</div>
+	</div>
+	<div style="width: 100%;">footer</div>
+
+</div>
+</body>
+</html>

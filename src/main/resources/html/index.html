@@ -25,18 +25,38 @@
     <link rel="stylesheet"
           href="http://static.qyer.com/models/common/component/headfoot/dist/headerfoot_black.min-fe3dcfc42c1fa73210caa4977af7b29a.css">
     <script src="http://static.qyer.com/models/common/component/headfoot/dist/headerfoot_black.min-2dd8855dca23c6459c082e79dccf6aa1.js"></script>
-
-    <div id="head"></div>
-    <div id="crumnav">
+    <div >
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <p style="margin-top: 15px;color: #fcf8e3" th:inline="text">欢迎你，[[${session?.user?.nickname}]]!</p>
+                </div>
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="http://localhost:8081/index">首页</a></li>
+                        <li><a href="http://localhost:8081/my">我的主页</a></li>
+                        <li class="dropdown navbar-nav">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                神游伙伴
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu ">
+                                <li><a href="http://jiudian.ctrip.cn/" target="_blank">携程</a></li>
+                                <li><a href="http://www.tuniu.com/" target="_blank">途牛</a></li>
+                                <li><a href="http://www.lvmama.com/" target="_blank">驴妈妈</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div id="crumnav" style="margin-top: -20px;">
         <div class="cn-wrap">
             <div class="cn-ct">
                 <div class="cn-fr">
-                    <div class="cfsub cn-pub" data-target="#toCreateArticle"><i class="inbg xpub" data-bn-ipg="bbs-index-newThread-tab"></i>发新帖</div>
-                    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#toCreateArticle">发新帖</button>
+                    <button style="margin-top: 40px;margin-right: 80px;" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#toCreateArticle">发新帖</button>
                 </div>
-
-
-
                 <div class="cn-desc">
                     <h1 class="desctitle">云游四海</h1>
                     <div class="descjj">
@@ -210,9 +230,11 @@
                 </div>
 
                 <div class="文章" style="clear: both;text-indent:30px; margin-left: 50px;">
+                    <p class="articleId" th:text="${info.id}" style="display: none"/>
                     <p th:text="'标题:'+${info.title}" style="font-size: larger"></p>
                     <p th:text="${info.content}" style="color:#888888;font-style:oblique;font-size: small;float: left;"></p>
                     <img src="/img/article/01.jpg">
+                    <button class="btn btn-primary btn-lg" data-toggle="modal" onclick="commentList(this);">评论</button>
                 </div>
 
 
@@ -269,9 +291,8 @@
         </div>
     </div>
 
-
-    <!-- 模态框（Modal） -->
-    <div class="modal fade" id="toCreateArticle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!-- 模态框（评论） -->
+    <div class="modal fade" id="commentListModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -279,13 +300,41 @@
                         &times;
                     </button>
                     <h4 class="modal-title" id="myModalLabel">
+                        <label>评论区</label>
+                    </h4>
+                </div>
+                <div class="modal-body" id="commentList"></div>
+                <div class="modal-body">
+                    <label>评论：</label>
+                    <input type="text" id="commentContent">
+                    <button value="发表" onclick="addComment();"></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addComment();">
+                        提交
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 模态框（发帖） -->
+    <div class="modal fade" id="toCreateArticle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" >
                         <label>标题：</label>
-                        <input type="text" id="title">
+                        <input type="text">
                     </h4>
                 </div>
                 <div class="modal-body">
                     <label>内容：</label>
-                    <input type="text" id="content">
+                    <input type="text">
                 </div>
 
 
@@ -304,7 +353,73 @@
     </div>
 
 
+<script type="text/javascript"  th:inline="javascript">
+    function addComment(){
+        var userId = [[${session?.user?.id}]];
+        var articleId = $(".article_id").val();
+        var content = $("#commentContent").val();
+        $.ajax({
+            url:'http://localhost:8083/addComment',
+            data:{
+                userId: userId,
+                articleId: articleId,
+                content: content
+            },
+            dataType:'JSON',
+            type:'POST',
+            success:function(data){
+                if("200"==data.code){
+                    $("#commentListModel").modal('hide');
+                    $("#commentContent").val("");
+                    alert("评论成功");
+                }else {
+                    alert("发表失败");
+                }
+            },
+            error:function(){
+                $("#commentListModel").modal('hide');
+                $("#commentContent").val("");
+                alert("系统出错");
+            }
+        });
 
+    }
+
+    function commentList(obj){
+        var articleId = $(obj).parent().find(".articleId").text();
+        $("#commentListModel").modal('show');
+        $.ajax({
+            url:'http://localhost:8083/commentList',
+            data:{
+                articleId: articleId
+            },
+            dataType:'JSON',
+            type:'POST',
+            success:function(data){
+                if("200"==data.code){
+                    //$("#commentListModel").modal('hide');
+                    var list = data.data;
+                    var str = '';
+                    if(list.length>0){
+                        for(var i=0;i<list.length;i++){
+                            str += list[i].nickname+":" + list[i].content + "</br>";
+                        }
+                        str += '<input class="article_id" type="text" style="display: none" value="'+list[0].articleId+'"/>';
+                        $("#commentList").html(str);
+                    } else{
+                        $("#commentList").html('');
+                    }
+                }else {
+                    $("#commentList").html('');
+                }
+            },
+            error:function(){
+                $("#commentList").html('');
+                alert("系统出错");
+            }
+        });
+    }
+</script>
 </div>
 <script type="text/javascript">
     //轮播图定时器
@@ -381,8 +496,15 @@
             }
         });
     }
+
+    //点赞
+
+    //查看更多
+
+    //关注
 </script>
 <!-- js文件 -->
 <script src="http://common1.qyerstatic.com/bbs/js/index/index_js_btm_1954eb6a3dbe1143fea36b7629b9a0e1.js"></script>
+
 </body>
 </html>
