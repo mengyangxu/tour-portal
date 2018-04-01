@@ -17,4 +17,6 @@ eureka:
 feign:
   httpclient:
     connection-timeout: 10000000
-feign
+ribbon:
+  ReadTimeout: 20000
+  ConnectTimeout: 200000
