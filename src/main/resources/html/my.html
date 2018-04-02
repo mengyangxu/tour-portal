@@ -15,25 +15,21 @@
 		<nav class="navbar navbar-inverse" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
-					<a class="navbar-brand" href="#">菜鸟教程</a>
+					<p style="margin-top: 15px;color: #fcf8e3" th:inline="text">欢迎你，[[${session?.user?.nickname}]]!</p>
 				</div>
 				<div>
 					<ul class="nav navbar-nav">
-						<li class="active"><a href="#">iOS</a></li>
-						<li><a href="#">SVN</a></li>
-						<li class="dropdown">
+						<li><a href="http://localhost:8081/index">首页</a></li>
+						<li><a href="http://localhost:8081/my">我的主页</a></li>
+						<li class="dropdown navbar-nav">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								Java
+								神游伙伴
 								<b class="caret"></b>
 							</a>
-							<ul class="dropdown-menu">
-								<li><a href="#">jmeter</a></li>
-								<li><a href="#">EJB</a></li>
-								<li><a href="#">Jasper Report</a></li>
-								<li class="divider"></li>
-								<li><a href="#">分离的链接</a></li>
-								<li class="divider"></li>
-								<li><a href="#">另一个分离的链接</a></li>
+							<ul class="dropdown-menu ">
+								<li><a href="http://jiudian.ctrip.cn/" target="_blank">携程</a></li>
+								<li><a href="http://www.tuniu.com/" target="_blank">途牛</a></li>
+								<li><a href="http://www.lvmama.com/" target="_blank">驴妈妈</a></li>
 							</ul>
 						</li>
 					</ul>
@@ -46,44 +42,12 @@
 			<div th:each="info, state: ${list}">
 				<div class="panel panel-success">
 					<div class="panel-heading">
-						<h3 class="panel-title" th:="${info.title}"></h3>
+						<h3 class="panel-title" th:text="${info.title}"></h3>
+						<a style="float: right;margin-top: -15px;" th:onclick="'javascript:commentList(' +${info.id}+ ')'">查看评论</a>
+						<a style="float: right;margin-top: -15px; margin-right: 10px;" th:onclick="'javascript:deleteArticle(' +${info.id}+ ')'">删除文章</a>
 					</div>
-					<div class="panel-body" th:="${info.content}">
-
+					<div class="panel-body" th:text="${info.content}">
 					</div>
-				</div>
-			</div>
-
-			<div class="panel panel-success">
-				<div class="panel-heading">
-					<h3 class="panel-title">面板标题</h3>
-				</div>
-				<div class="panel-body">
-					这是一个基本的面板
-				</div>
-			</div>
-			<div class="panel panel-info">
-				<div class="panel-heading">
-					<h3 class="panel-title">面板标题</h3>
-				</div>
-				<div class="panel-body">
-					这是一个基本的面板
-				</div>
-			</div>
-			<div class="panel panel-primary">
-				<div class="panel-heading">
-					<h3 class="panel-title">面板标题</h3>
-				</div>
-				<div class="panel-body">
-					这是一个基本的面板
-				</div>
-			</div>
-			<div class="panel panel-warning">
-				<div class="panel-heading">
-					<h3 class="panel-title">面板标题</h3>
-				</div>
-				<div class="panel-body">
-					这是一个基本的面板
 				</div>
 			</div>
 			<div>
@@ -94,12 +58,185 @@
 			</div>
 		</div>
 		<div style="float:right;width:20%; border-color: #398439;" >
-			<div>个人相关资料</div>
-			<div>头像<img src="http://localhost:8081/img/head/1.jpg" class="img-responsive img-circle" alt="个人头像" style="width: 50%;"></div>
+			<img src="http://localhost:8081/img/head/1.jpg" class="img-responsive img-circle" alt="个人头像" style="width: 50%;">
+			<p>个人相关资料:<a data-toggle="modal" data-target="#altInfo">修改</a></p>
+			<p th:inline="text">昵称：[[${user.nickname}]]</p>
+			<p th:if="${user.sex} eq '1'">性别：男</p>
+			<p th:if="${user.sex} eq '2'">性别：女</p>
+			<p th:if="${user.email} ne null"  th:inline="text">邮箱地址：[[${user.email}]]</p>
+			<p th:if="${user.email} eq null" th:inline="text">邮箱地址：未填写</p>
+			<p th:if="${user.phone!=null}" th:inline="text">电话号码：[[${user.phone}]]</p>
+			<p th:if="${user.phone==null}" th:inline="text">电话号码：未填写</p>
 		</div>
 	</div>
 	<div style="width: 100%;">footer</div>
 
+	<!-- 模态框（评论） -->
+	<div class="modal fade" id="commentListModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						<label>评论区</label>
+					</h4>
+				</div>
+				<div class="modal-body" id="commentList"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					</button>
+					<button type="button" class="btn btn-primary" onclick="addComment();">
+						提交
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<div class="modal fade" id="altInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title">
+						<label>个人信息</label>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<label>昵称：</label><input type="text" th:value="${user.nickname}" id="nickname"><br>
+					<label>性别：</label><input type="text" th:value="${user.sex}" id="sex"><br>
+					<label>邮箱：</label><input type="text" th:value="${user.email}" id="email"><br>
+					<label>号码：</label><input type="text" th:value="${user.phone}" id="phone">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					</button>
+					<button type="button" class="btn btn-primary" onclick="saveInfo();">
+						提交
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
 </div>
 </body>
+<script type="text/javascript">
+    function saveInfo(){
+        var nickname = $("#nickname").val();
+        var sex = $("#sex").val();
+        var email = $("#email").val();
+        var phone = $("#phone").val();
+        $.ajax({
+            url:'http://localhost:8083/saveInfo',
+            data:{
+				nickname: nickname,
+				sex: sex,
+				email: email,
+				phone: phone
+            },
+            dataType:'JSON',
+            type:'POST',
+            success:function(data){
+                if("200"==data.code){
+                    alert("修改成功");
+                    window.location.href = "http://localhost:8081/my";
+                }else {
+                    alert("修改失败");
+                    window.location.href = "http://localhost:8081/my";
+                }
+            },
+            error:function(){
+                alert("系统出错");
+                window.location.href = "http://localhost:8081/my";
+            }
+        });
+	}
+
+    function commentList(id){
+        var articleId = id;
+        $("#commentListModel").modal('show');
+        $.ajax({
+            url:'http://localhost:8083/commentList',
+            data:{
+                articleId: articleId
+            },
+            dataType:'JSON',
+            type:'POST',
+            success:function(data){
+                if("200"==data.code){
+                    var list = data.data;
+                    var str = '';
+                    if(list.length>0){
+                        for(var i=0;i<list.length;i++){
+                            str += list[i].nickname+":" + list[i].content + '<a  style="float:right;margin-right:-5px;" onclick="deleteComment('+list[i].id +')">'+'删除'+"</a></br>";
+                        }
+                        $("#commentList").html(str);
+                    } else{
+                        $("#commentList").html('');
+                    }
+                }else {
+                    $("#commentList").html('');
+                }
+            },
+            error:function(){
+                $("#commentList").html('');
+                alert("系统出错");
+            }
+        });
+    }
+
+    //删除评论
+    function deleteComment(id){
+        var commentId = id;
+        $.ajax({
+            url:'http://localhost:8083/deleteComment',
+            data:{
+                commentId: commentId
+            },
+            dataType:'JSON',
+            type:'POST',
+            success:function(data){
+                if("200"==data.code){
+					$("#commentListModel").modal("hide");
+					alert("删除成功");
+                }else {
+                    $("#commentListModel").modal("hide");
+                	alert("删除失败");
+                }
+            },
+            error:function(){
+                alert("系统出错");
+            }
+        });
+	}
+
+	//删除文章
+	function deleteArticle(id){
+        var articleId = id;
+        $.ajax({
+            url:'http://localhost:8083/deleteArticle',
+            data:{
+                articleId: articleId
+            },
+            dataType:'JSON',
+            type:'POST',
+            success:function(data){
+                if("200"==data.code){
+                    alert("删除成功");
+                    window.location.href = "http://localhost:8081/my";
+                }else {
+                    alert("删除失败");
+                	window.location.href = "http://localhost:8081/my";
+                }
+            },
+            error:function(){
+                alert("系统出错");
+				window.location.href = "http://localhost:8081/my";
+            }
+        });
+	}
+</script>
 </html>

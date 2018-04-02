@@ -4,6 +4,7 @@ import com.xmy.bean.bean.Article;
 import com.xmy.bean.bean.User;
 import com.xmy.bean.vo.ArticleInfo;
 import com.xmy.portal.utils.JsonResponse;
+import feign.Param;
 import org.omg.CORBA.Request;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.stereotype.Service;
@@ -31,4 +32,9 @@ public interface UserService {
     @RequestMapping(value = "/addArticle" ,method = RequestMethod.POST )
     JsonResponse addArticle(@RequestBody(required = false) Article article);
 
+    @RequestMapping("/getArticleInfosById")
+    List<ArticleInfo> getArticleInfoById(@RequestParam("id") Integer id);
+
+    @RequestMapping("/getUserById")
+    User getById(@RequestParam("id") Integer id);
 }
