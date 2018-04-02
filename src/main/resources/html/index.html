@@ -16,7 +16,11 @@
     <script src="http://localhost:8081/js/zh.js"></script>
     <link rel="stylesheet" href="http://localhost:8081/css/bootstrap-dialog.css">
     <script src="http://localhost:8081/js/bootstrap-dialog.js"></script>
-
+    <style  type="text/css">
+        a{
+            cursor:pointer;
+        }
+    </style>
 </head>
 
 <body style="">
@@ -222,13 +226,12 @@
             <div th:each="info, state: ${list}">
                 <br>
                 <div>
-                    <img th:src="@{'/img/'+${info.headPic}}" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>
+                    <img th:src="@{'/img/'+${info.headPic}}" onerror="this.src='http://localhost:8081/img/head/0.jpg'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>
                     <p style="float: left;margin-left: 20px;" th:text="${info.nickname}"></p>
                     <p style="float: left;margin-left: 20px; color: #D0D0D0;" th:text="'在'+${info.address}+'发布的'"></p>
-                    <p style="float: left;margin-left: 20px; color: #D0D0D0;">171人赞</p>
+                    <p style="float: left;margin-left: 20px; color: #D0D0D0;" th:inline="text">[[${info.zanNum}]]人赞</p>
                     <img src="/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 20px;"/>
                 </div>
-
                 <div class="文章" style="clear: both;text-indent:30px; margin-left: 50px;">
                     <p class="articleId" th:text="${info.id}" style="display: none"/>
                     <p th:text="'标题:'+${info.title}" style="font-size: larger"></p>
@@ -236,23 +239,15 @@
                     <img src="/img/article/01.jpg">
                     <button class="btn btn-primary btn-lg" data-toggle="modal" onclick="commentList(this);">评论</button>
                 </div>
-
-
             </div>
-
-            <img th:src="@{'/img/upload/'+${session.articlePicString}}" />
-
+            <div>
+                <ul class="pager">
+                    <li><a onclick="previous();" id="previous">Previous</a></li>
+                    <li><a onclick="nextPage();" id="nextPage">Next</a></li>
+                </ul>
+            </div>
         </div>
-
     </div>
-
-    <script type="text/javascript">
-
-    </script>
-
-
-
-
 
     <!-- 底部调用文件 -->
     <div style="display: none;">http://www.qyer.com/</div>
@@ -291,7 +286,6 @@
 
         </div>
     </div>
-
     <!-- 模态框（评论） -->
     <div class="modal fade" id="commentListModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -352,8 +346,31 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
+<script type="text/javascript" th:inline="javascript">
+
+    var currentPage = [[${currentPage}]];
+    var totalPage = [[${totalPage}]];
+    $(function(){
+        if(currentPage <= 1){
+            $("#previous").removeAttr("onclick");
+            $("#previous").css("cursor","auto");
+
+        }
+        if(currentPage>=totalPage){
+            $("#nextPage").removeAttr("onclick");
+            $("#nextPage").css("cursor","auto");
+        }
+    });
 
 
+    function previous(){
+        alert("-1");
+    }
+
+    function nextPage(){
+        alert("+1");
+    }
+</script>
 <script type="text/javascript"  th:inline="javascript">
     function addComment(){
         var userId = [[${session?.user?.id}]];
