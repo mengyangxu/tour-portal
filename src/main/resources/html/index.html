@@ -218,6 +218,7 @@
 
             </div>
 
+            <img th:src="@{'/img/upload/'+${session.articlePicString}}" />
 
         </div>
 
@@ -307,6 +308,13 @@
 
 </div>
 <script type="text/javascript">
+    //清楚模态框页面缓存
+    $("#toCreateArticle").on("hidden.bs.modal", function() {
+        $("#title").val("");
+        $("#content").val("");
+        $("#file-zh").fileinput('reset');
+    });
+
     //轮播图定时器
     $(".cn-sy li").on("hover",function(){
         var index = $(this).index();
