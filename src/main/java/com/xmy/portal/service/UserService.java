@@ -2,6 +2,7 @@ package com.xmy.portal.service;
 
 import com.xmy.bean.bean.Article;
 import com.xmy.bean.bean.User;
+import com.xmy.bean.common.Page;
 import com.xmy.bean.vo.ArticleInfo;
 import com.xmy.portal.utils.JsonResponse;
 import feign.Param;
@@ -26,8 +27,8 @@ public interface UserService {
     @RequestMapping("/login")
     User login(@RequestParam("username") String username, @RequestParam("password") String password);
 
-    @RequestMapping("/articleInfoList")
-    List<ArticleInfo> getArticleInfo();
+    @RequestMapping("/articleInfoPage")
+    List<ArticleInfo> getArticleInfo(@RequestBody Page page);
 
     @RequestMapping(value = "/addArticle" ,method = RequestMethod.POST )
     JsonResponse addArticle(@RequestBody(required = false) Article article);
@@ -37,4 +38,7 @@ public interface UserService {
 
     @RequestMapping("/getUserById")
     User getById(@RequestParam("id") Integer id);
+
+    @RequestMapping("/getArticleNum")
+    int getArticleNum();
 }

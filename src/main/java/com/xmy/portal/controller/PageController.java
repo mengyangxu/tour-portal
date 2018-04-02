@@ -2,6 +2,7 @@ package com.xmy.portal.controller;
 
 
 import com.xmy.bean.bean.User;
+import com.xmy.bean.common.Page;
 import com.xmy.bean.vo.ArticleInfo;
 import com.xmy.portal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,25 @@ public class PageController {
     @Autowired
     private UserService userService;
 
+    final int pageSize = 3;
+
     @RequestMapping("/index")
     public String index(HttpServletRequest request){
-        List<ArticleInfo> list = userService.getArticleInfo();
+        Page page = null;
+        int currentPage = 1;
+        if(null==request.getAttribute("currentPage")){
+            currentPage = 1;
+        } else {
+            String currentPageStr = request.getAttribute("currentPage").toString();
+            currentPage = Integer.valueOf(currentPageStr);
+        }
+        page = new Page(pageSize,0,currentPage);
+        List<ArticleInfo> list = userService.getArticleInfo(page);
+        int totalResult = userService.getArticleNum();
+        page = new Page(pageSize,totalResult,currentPage);
         request.setAttribute("list", list);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("totalPage",page.getTotalPage());
         return "index";
     }
 

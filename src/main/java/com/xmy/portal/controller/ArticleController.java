@@ -43,8 +43,9 @@ public class ArticleController {
 
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
         //List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "D"+"://"+"plantpictureurl/", session);
-        //List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "http://localhost:8081/img/upload/", session);
-        List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "C:\\Users\\Administrator\\Downloads\\tour-portal\\src\\main\\resources\\static\\img\\upload/", session);
+        //List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "http://localhost:8080/img/", session);
+        List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "D:\\Program Files\\apache-tomcat-7.0.82\\webapps\\ROOT\\img/", session);
+        //List<UploadFile> fileList = UploadUtil.getUploadFiles(multiRequest, "C:\\Users\\Administrator\\Downloads\\tour-portal\\src\\main\\resources\\static\\img\\upload/", session);
         Map<String, Object> map = new HashMap<String, Object>();
         try {
             for (UploadFile file : fileList) {
