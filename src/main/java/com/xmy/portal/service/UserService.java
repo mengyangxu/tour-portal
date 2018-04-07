@@ -41,4 +41,7 @@ public interface UserService {
 
     @RequestMapping("/getArticleNum")
     int getArticleNum();
+
+    @RequestMapping("/getAdverts")
+    List<User> getAdverts();
 }

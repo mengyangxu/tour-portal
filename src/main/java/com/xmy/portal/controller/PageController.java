@@ -28,17 +28,20 @@ public class PageController {
     public String index(HttpServletRequest request){
         Page page = null;
         int currentPage = 1;
-        if(null==request.getAttribute("currentPage")){
+        if(null==request.getParameter("currentPage")){
             currentPage = 1;
         } else {
-            String currentPageStr = request.getAttribute("currentPage").toString();
+            String currentPageStr = request.getParameter("currentPage").toString();
             currentPage = Integer.valueOf(currentPageStr);
         }
         page = new Page(pageSize,0,currentPage);
         List<ArticleInfo> list = userService.getArticleInfo(page);
+        list = this.check(list);
+        List<User> adverts = userService.getAdverts();
         int totalResult = userService.getArticleNum();
         page = new Page(pageSize,totalResult,currentPage);
         request.setAttribute("list", list);
+        request.setAttribute("adverts",adverts);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPage",page.getTotalPage());
         return "index";
@@ -65,42 +68,17 @@ public class PageController {
     public String upload(){
         return "fileup";
     }
-    /*
-    @RequestMapping("/logined")
-    public String logined(User user, HttpSession session, Model model){
-    	System.out.println("用户名："+user.getUsername());
-        User user1 = postService.findUser(user);
-        if (user1 != null){
-            session.setAttribute("sessionUser", user1);
-            Page<Theme> themeAll = postService.findThemeAll(0);
-            List<Theme> themeList = themeAll.getContent();
-            int number = themeAll.getNumber();
-            int totalPages = themeAll.getTotalPages();
-            long all = themeAll.getTotalElements();
-            model.addAttribute("all", all);
-            model.addAttribute("total", totalPages);
-            model.addAttribute("number", number+1);
-            model.addAttribute("themeList", themeList);
-            return "theme";
-        }else {
-            return "error";
+
+
+    List<ArticleInfo> check(List<ArticleInfo> list){
+        for(ArticleInfo info: list){
+            if(null!=info.getPics()&&!"".equals(info.getPics())) {
+                String pics = info.getPics();
+                String[] pic = pics.split(",");
+                info.setPics(pic[0]);
+            }
         }
-
-    }*/
-
-    /*@RequestMapping("/logout")
-    public String logout(HttpSession session, Model model){
-        session.removeAttribute("sessionUser");
-        Page<Theme> themeAll = postService.findThemeAll(0);
-        List<Theme> themeList = themeAll.getContent();
-        int number = themeAll.getNumber();
-        int totalPages = themeAll.getTotalPages();
-        long all = themeAll.getTotalElements();
-        model.addAttribute("all", all);
-        model.addAttribute("total", totalPages);
-        model.addAttribute("number", number+1);
-        model.addAttribute("themeList", themeList);
-        return "theme";
-    }*/
+        return list;
+    }
 
 }

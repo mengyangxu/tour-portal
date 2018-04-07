@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8"/>
     <title>云游四海</title>
-    <link rel="shortcut icon" href="//localhost:8081/img/long.jpg"/>
+    <link rel="shortcut icon" href="http://118.25.102.29:8084/img/long.jpg"/>
 
-    <link rel="stylesheet" href="http://localhost:8081/css/qyou.css">
+    <link rel="stylesheet" href="/css/qyou.css">
     <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://localhost:8081/css/fileinput.min.css">
+    <link rel="stylesheet" href="/css/fileinput.min.css">
 
     <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <script src="http://localhost:8081/js/fileinput.min.js"></script>
-    <script src="http://localhost:8081/js/zh.js"></script>
-    <link rel="stylesheet" href="http://localhost:8081/css/bootstrap-dialog.css">
-    <script src="http://localhost:8081/js/bootstrap-dialog.js"></script>
+    <script src="/js/fileinput.min.js"></script>
+    <script src="/js/zh.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap-dialog.css">
+    <script src="/js/bootstrap-dialog.js"></script>
     <style  type="text/css">
         a{
             cursor:pointer;
@@ -37,8 +37,8 @@
                 </div>
                 <div>
                     <ul class="nav navbar-nav">
-                        <li><a href="http://localhost:8081/index">首页</a></li>
-                        <li><a href="http://localhost:8081/my">我的主页</a></li>
+                        <li><a href="/index">首页</a></li>
+                        <li><a href="/my">我的主页</a></li>
                         <li class="dropdown navbar-nav">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 神游伙伴
@@ -71,123 +71,56 @@
         </div>
         <div class="cns-wrap">
             <div class="cnsw-sdi">
-                <div class="cn-slide cszdx">
-                    <div class="cns-inner">
-                        <a href="http://bbs.qyer.com/thread-2893447-1.html" target="_blank" class="cs-cover"
-                           data-bn-ipg="bbs-index-top-pic-1"><img
-                                src="http://localhost:8081/img/1.jpg"
-                                alt="背包去关西寻找安藤忠雄的建筑名作，只因一场莫名其妙的梦"></a>
-                        <div class="cs-co">
-                            <a href="http://www.qyer.com/u/1063325" target="_blank" class="cs-userpic"
-                               data-bn-ipg="bbs-index-top-writerPic-1"><img
-                                    src="http://localhost:8081/img/head/1.jpg" alt="荒梁"></a>
-                            <p class="cs-unw"><a href="http://www.qyer.com/u/1063325" target="_blank"
-                                                 data-bn-ipg="bbs-index-top-writerName-1">荒梁</a></p>
-                            <a href="http://bbs.qyer.com/thread-2893447-1.html" target="_blank" class="cs-title"
-                               data-countlen="0" data-bn-ipg="bbs-index-top-title-1">背包去关西寻找安藤忠雄的建筑名作，只因一场莫名其妙的梦</a>
+
+
+                <div th:each="info, state: ${adverts}">
+                    <div th:class="${state.index==1}? 'cn-slide cszdx':'cn-slide'">
+                        <div class="cns-inner">
+                            <a href="http://bbs.qyer.com/thread-2893447-1.html" target="_blank" class="cs-cover"
+                               data-bn-ipg="bbs-index-top-pic-1"><img
+                                    th:src="@{${info.backgroundPic}}"
+                                    alt="背包去关西寻找安藤忠雄的建筑名作，只因一场莫名其妙的梦"></a>
+                            <div class="cs-co">
+                                <a href="http://www.qyer.com/u/1063325" target="_blank" class="cs-userpic"
+                                   data-bn-ipg="bbs-index-top-writerPic-1"><img
+                                        th:src="@{'/img'+${info.headPic}}" alt="荒梁"></a>
+                                <p class="cs-unw"><a href="http://www.qyer.com/u/1063325" target="_blank"
+                                                     data-bn-ipg="bbs-index-top-writerName-1" th:text="${info.nickname}"></a></p>
+                                <a href="http://bbs.qyer.com/thread-2893447-1.html" target="_blank" class="cs-title"
+                                   data-countlen="0" data-bn-ipg="bbs-index-top-title-1" th:text="${info.backgroundAlt}"></a>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="cn-slide">
-                    <div class="cns-inner">
-                        <a href="http://bbs.qyer.com/thread-2886219-1.html" target="_blank" class="cs-cover"
-                           data-bn-ipg="bbs-index-top-pic-2"><img
-                                src="http://localhost:8081/img/2.jpg"
-                                alt="“菲”比寻常游学记，比冷门更冷门的小众地--解锁菲律宾隐藏新技能（全文完）"></a>
-                        <div class="cs-co">
-                            <a href="http://www.qyer.com/u/562326" target="_blank" class="cs-userpic"
-                               data-bn-ipg="bbs-index-top-writerPic-2"><img
-                                    src="http://localhost:8081/img/head/2.jpg" alt="rain_chenyu"></a>
-                            <p class="cs-unw"><a href="http://www.qyer.com/u/562326" target="_blank"
-                                                 data-bn-ipg="bbs-index-top-writerName-2">rain_chenyu</a></p>
-                            <a href="http://bbs.qyer.com/thread-2886219-1.html" target="_blank" class="cs-title"
-                               data-countlen="0" data-bn-ipg="bbs-index-top-title-2">“菲”比寻常游学记，比冷门更冷门的小众地--解锁菲律宾隐藏新技能（全文完）</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="cn-slide">
-                    <div class="cns-inner">
-                        <img class="cnsi-authen index-tooltip" data-tooltiptype="1"
-                             data-url="//www.qyer.com/u/member/xuan" data-title="摄影资深用户"
-                             src="http://common1.qyerstatic.com/bbs/old/images/authentication_u.png" alt="摄影资深用户">
-                        <a href="http://bbs.qyer.com/thread-2894887-1.html" target="_blank" class="cs-cover"
-                           data-bn-ipg="bbs-index-top-pic-3"><img
-                                src="http://localhost:8081/img/3.jpg"
-                                alt="北纬1度，去美娜多潜水，去Bromo拍星"></a>
-                        <div class="cs-co">
-                            <a href="http://www.qyer.com/u/1551977" target="_blank" class="cs-userpic"
-                               data-bn-ipg="bbs-index-top-writerPic-3"><img
-                                    src="http://localhost:8081/img/head/3.jpg" alt="非鸟的泪"></a>
-                            <p class="cs-unw"><a href="http://www.qyer.com/u/1551977" target="_blank"
-                                                 data-bn-ipg="bbs-index-top-writerName-3">非鸟的泪</a></p>
-                            <a href="http://bbs.qyer.com/thread-2894887-1.html" target="_blank" class="cs-title"
-                               data-countlen="0" data-bn-ipg="bbs-index-top-title-3">北纬1度，去美娜多潜水，去Bromo拍星</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="cn-slide">
-                    <div class="cns-inner">
-                        <a href="http://bbs.qyer.com/thread-2823521-1.html" target="_blank" class="cs-cover"
-                           data-bn-ipg="bbs-index-top-pic-4"><img
-                                src="http://localhost:8081/img/4.jpg"
-                                alt="【永恒ღ三人行】——勇闯美西18天自驾之旅（完结）"></a>
-                        <div class="cs-co">
-                            <a href="http://www.qyer.com/u/1003898" target="_blank" class="cs-userpic"
-                               data-bn-ipg="bbs-index-top-writerPic-4"><img
-                                    src="http://localhost:8081/img/head/4.jpg" alt="summercoca520"></a>
-                            <p class="cs-unw"><a href="http://www.qyer.com/u/1003898" target="_blank"
-                                                 data-bn-ipg="bbs-index-top-writerName-4">summercoca520</a></p>
-                            <a href="http://bbs.qyer.com/thread-2823521-1.html" target="_blank" class="cs-title"
-                               data-countlen="0" data-bn-ipg="bbs-index-top-title-4">【永恒ღ三人行】——勇闯美西18天自驾之旅（完结）</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="cn-slide">
-                    <div class="cns-inner">
-                        <a href="http://bbs.qyer.com/thread-2893449-1.html" target="_blank" class="cs-cover"
-                           data-bn-ipg="bbs-index-top-pic-5"><img
-                                src="http://localhost:8081/img/5.jpg"
-                                alt="从人类社会到蛮荒之地——澳大利亚探险之旅"></a>
-                        <div class="cs-co">
-                            <a href="http://www.qyer.com/u/1402018" target="_blank" class="cs-userpic"
-                               data-bn-ipg="bbs-index-top-writerPic-5"><img
-                                    src="http://localhost:8081/img/head/5.jpg" alt="超级小包子"></a>
-                            <p class="cs-unw"><a href="http://www.qyer.com/u/1402018" target="_blank"
-                                                 data-bn-ipg="bbs-index-top-writerName-5">超级小包子</a></p>
-                            <a href="http://bbs.qyer.com/thread-2893449-1.html" target="_blank" class="cs-title"
-                               data-countlen="0" data-bn-ipg="bbs-index-top-title-5">从人类社会到蛮荒之地——澳大利亚探险之旅</a>
-                        </div>
-                    </div>
-                </div>
-                <ul class="cn-sy">
+                <ul class="cn-sy" th:each="info, state: ${adverts}">
                     <li class="">
                         <a href="http://bbs.qyer.com/thread-2893447-1.html" target="_blank" class="csl-i"
                            data-bn-ipg="bbs-index-top-icon-1"><span class="csli-span"><img
-                                src="http://localhost:8081/img/101.jpg"></span></a><a
+                               src="http://118.25.102.29:8084/img/101.jpg"></span></a><a
                             href="http://bbs.qyer.com/thread-2893447-1.html" class="csl-b" target="_blank"></a>
                     </li>
                     <li class="">
                         <a href="http://bbs.qyer.com/thread-2886219-1.html" target="_blank" class="csl-i"
                            data-bn-ipg="bbs-index-top-icon-2"><span class="csli-span"><img
-                                src="http://localhost:8081/img/102.jpg"></span></a><a
+                                src="http://118.25.102.29:8084/img/102.jpg"></span></a><a
                             href="http://bbs.qyer.com/thread-2886219-1.html" class="csl-b" target="_blank"></a>
                     </li>
                     <li class="">
                         <a href="http://bbs.qyer.com/thread-2894887-1.html" target="_blank" class="csl-i"
                            data-bn-ipg="bbs-index-top-icon-3"><span class="csli-span"><img
-                                src="http://localhost:8081/img/103.jpg"></span></a><a
+                                src="http://118.25.102.29:8084/img/103.jpg"></span></a><a
                             href="http://bbs.qyer.com/thread-2894887-1.html" class="csl-b" target="_blank"></a>
                     </li>
                     <li class="">
                         <a href="http://bbs.qyer.com/thread-2823521-1.html" target="_blank" class="csl-i"
                            data-bn-ipg="bbs-index-top-icon-4"><span class="csli-span"><img
-                                src="http://localhost:8081/img/104.jpg"></span></a><a
+                                src="http://118.25.102.29:8084/img/104.jpg"></span></a><a
                             href="http://bbs.qyer.com/thread-2823521-1.html" class="csl-b" target="_blank"></a>
                     </li>
                     <li class="">
                         <a href="http://bbs.qyer.com/thread-2893449-1.html" target="_blank" class="csl-i"
                            data-bn-ipg="bbs-index-top-icon-5"><span class="csli-span"><img
-                                src="http://localhost:8081/img/105.jpg"></span></a><a
+                                src="http://118.25.102.29:8084/img/105.jpg"></span></a><a
                             href="http://bbs.qyer.com/thread-2893449-1.html" class="csl-b" target="_blank"></a>
                     </li>
                 </ul>
@@ -195,55 +128,41 @@
 
         </div>
         <!-- 背景模糊 -->
-        <div class="cnbgwrap">
-            <div class="cnb-wp bgzdx">
-                <img src="http://localhost:8081/img/mh1.jpg"
+        <div class="cnbgwrap" th:each="info, state: ${adverts}">
+            <div th:class="${state.index==1}? 'cnb-wp bgzdx':'cnb-wp'">
+                <img th:src="@{${info.backbackPic}}"
                      class="cn-bg cnb-show">
-            </div>
-            <div class="cnb-wp">
-                <img src="http://localhost:8081/img/mh2.jpg"
-                     class="cn-bg ">
-            </div>
-            <div class="cnb-wp">
-                <img src="http://localhost:8081/img/mh3.jpg"
-                     class="cn-bg ">
-            </div>
-            <div class="cnb-wp">
-                <img src="http://localhost:8081/img/mh4.jpg"
-                     class="cn-bg ">
-            </div>
-            <div class="cnb-wp">
-                <img src="http://localhost:8081/img/mh5"
-                     class="cn-bg ">
             </div>
         </div>
     </div>
 
     <!--内容列表部分-->
     <div id="conContainer" style="margin-left: 15%">
-        <div style="width: 55%;">
+        <div>
 
             <div th:each="info, state: ${list}">
                 <br>
-                <div>
-                    <img th:src="@{'/img/'+${info.headPic}}" onerror="this.src='http://localhost:8081/img/head/0.jpg'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>
+                <div style="clear: both;">
+                    <img th:src="@{'http://118.25.102.29:8084/img/'+${info.headPic}}" onerror="this.src='http://118.25.102.29:8084/img/head/0.jpg'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>
                     <p style="float: left;margin-left: 20px;" th:text="${info.nickname}"></p>
                     <p style="float: left;margin-left: 20px; color: #D0D0D0;" th:text="'在'+${info.address}+'发布的'"></p>
                     <p style="float: left;margin-left: 20px; color: #D0D0D0;" th:inline="text">[[${info.zanNum}]]人赞</p>
-                    <img src="/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 20px;"/>
+                    <img src="http://118.25.102.29:8084/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 40px;margin-top: -25px;"/>
+                    <button style="margin-left: 200px;" class="btn btn-primary btn-lg" data-toggle="modal" onclick="commentList(this);">评论</button>
                 </div>
-                <div class="文章" style="clear: both;text-indent:30px; margin-left: 50px;">
+                <div class="文章" style="float: left; text-indent:30px; margin-left: 50px;width:55%;">
                     <p class="articleId" th:text="${info.id}" style="display: none"/>
                     <p th:text="'标题:'+${info.title}" style="font-size: larger"></p>
                     <p th:text="${info.content}" style="color:#888888;font-style:oblique;font-size: small;float: left;"></p>
-                    <img src="/img/article/01.jpg">
-                    <button class="btn btn-primary btn-lg" data-toggle="modal" onclick="commentList(this);">评论</button>
+                </div>
+                <div style="float: left; margin-left: 80px;margin-top: 20px;">
+                    <img th:src="@{'http://118.25.102.29:8084'+${info.pics}}">
                 </div>
             </div>
-            <div>
+            <div style="clear: both;margin-top: 180px;margin-right: 20%;">
                 <ul class="pager">
-                    <li><a onclick="previous();" id="previous">Previous</a></li>
-                    <li><a onclick="nextPage();" id="nextPage">Next</a></li>
+                    <li><a th:href="@{'/index?currentPage='+${currentPage-1}}" id="previous">Previous</a></li>
+                    <li><a th:href="@{'/index?currentPage='+${currentPage+1}}" id="nextPage">Next</a></li>
                 </ul>
             </div>
         </div>
@@ -324,12 +243,12 @@
                     </button>
                     <h4 class="modal-title" >
                         <label>标题：</label>
-                        <input type="text">
+                        <input type="text" id="title">
                     </h4>
                 </div>
                 <div class="modal-body">
                     <label>内容：</label>
-                    <input type="text">
+                    <input type="text" id="content">
                 </div>
 
 
@@ -352,24 +271,16 @@
     var totalPage = [[${totalPage}]];
     $(function(){
         if(currentPage <= 1){
-            $("#previous").removeAttr("onclick");
+            $("#previous").removeAttr('href');
             $("#previous").css("cursor","auto");
 
         }
         if(currentPage>=totalPage){
-            $("#nextPage").removeAttr("onclick");
+            $("#nextPage").removeAttr('href');
             $("#nextPage").css("cursor","auto");
         }
     });
 
-
-    function previous(){
-        alert("-1");
-    }
-
-    function nextPage(){
-        alert("+1");
-    }
 </script>
 <script type="text/javascript"  th:inline="javascript">
     function addComment(){
@@ -377,7 +288,7 @@
         var articleId = $(".article_id").val();
         var content = $("#commentContent").val();
         $.ajax({
-            url:'http://localhost:8083/addComment',
+            url:[[${session.serviceUrl}]]+'addComment',
             data:{
                 userId: userId,
                 articleId: articleId,
@@ -389,25 +300,52 @@
                 if("200"==data.code){
                     $("#commentListModel").modal('hide');
                     $("#commentContent").val("");
-                    alert("评论成功");
+                    BootstrapDialog.show({
+                        type : BootstrapDialog.TYPE_SUCCESS,
+                        title : 'success',
+                        message : '评论成功',
+                        onshown : function(dialogRef) {
+                            setTimeout(function() {
+                                dialogRef.close();
+                            }, 500);
+                        }
+                    });
                 }else {
-                    alert("发表失败");
+                    BootstrapDialog.show({
+                        type : BootstrapDialog.TYPE_DANGER,
+                        title : 'error ',
+                        message : '评论失败',
+                        onshown : function(dialogRef) {
+                            setTimeout(function() {
+                                dialogRef.close();
+                            }, 500);
+                        }
+                    });
                 }
             },
             error:function(){
                 $("#commentListModel").modal('hide');
                 $("#commentContent").val("");
-                alert("系统出错");
+                BootstrapDialog.show({
+                    type : BootstrapDialog.TYPE_DANGER,
+                    title : 'error ',
+                    message : '系统出错',
+                    onshown : function(dialogRef) {
+                        setTimeout(function() {
+                            dialogRef.close();
+                        }, 500);
+                    }
+                });
             }
         });
 
     }
 
     function commentList(obj){
-        var articleId = $(obj).parent().find(".articleId").text();
+        var articleId = $(obj).parent().parent().find(".articleId").text();
         $("#commentListModel").modal('show');
         $.ajax({
-            url:'http://localhost:8083/commentList',
+            url:[[${session.serviceUrl}]]+'commentList',
             data:{
                 articleId: articleId
             },
@@ -433,7 +371,16 @@
             },
             error:function(){
                 $("#commentList").html('');
-                alert("系统出错");
+                BootstrapDialog.show({
+                    type : BootstrapDialog.TYPE_DANGER,
+                    title : 'error ',
+                    message : '系统出错',
+                    onshown : function(dialogRef) {
+                        setTimeout(function() {
+                            dialogRef.close();
+                        }, 500);
+                    }
+                });
             }
         });
     }
@@ -450,7 +397,8 @@
     //轮播图定时器
     $(".cn-sy li").on("hover",function(){
         var index = $(this).index();
-        $(".cn-slide").eq(index).addClass("cszdx").siblings().removeClass("cszdx");
+        $(".cn-slide").removeClass("cszdx");
+        $(".cn-slide").eq(index).addClass("cszdx");
         $(".cnb-wp").eq(index).addClass("bgzdx").siblings().removeClass("bgzdx");
     });
 
@@ -467,7 +415,8 @@
 
     $(".cn-sy li").mouseenter(function() {
         var index = $(this).index();
-        $(".cn-slide").eq(index).addClass("cszdx").siblings().removeClass("cszdx");
+        $(".cn-slide").removeClass("cszdx");
+        $(".cn-slide").eq(index).addClass("cszdx");
         $(".cnb-wp").eq(index).addClass("bgzdx").siblings().removeClass("bgzdx");
         clearInterval(timer);
     });
@@ -484,7 +433,7 @@
 
     //上传文件
     $("#file-zh").fileinput({
-        uploadUrl: 'http://localhost:8081/upload',
+        uploadUrl: '/upload',
     });
     $('#file-zh').on('fileuploaded', function (event, data, previewId, index) {
         var date = data.jqXHR.responseJSON;
@@ -499,7 +448,7 @@
         var title = $("#title").val();
         var content = $("#content").val();
         $.ajax({
-            url:'http://localhost:8081/addArticle',
+            url:'/addArticle',
             data:{
                 'title': title,
                 'content': content
@@ -509,15 +458,42 @@
             success:function(data){
                 if("200"==data.code){
                     $("#toCreateArticle").modal('hide');
-                    alert("创建成功");
+                    BootstrapDialog.show({
+                        type : BootstrapDialog.TYPE_SUCCESS,
+                        title : 'success',
+                        message : '发表成功',
+                        onshown : function(dialogRef) {
+                            setTimeout(function() {
+                                dialogRef.close();
+                            }, 500);
+                        }
+                    });
                 }else {
                     $("#toCreateArticle").modal('hide');
-                    alert("添加失败");
+                    BootstrapDialog.show({
+                        type : BootstrapDialog.TYPE_DANGER,
+                        title : 'error ',
+                        message : '添加失败',
+                        onshown : function(dialogRef) {
+                            setTimeout(function() {
+                                dialogRef.close();
+                            }, 500);
+                        }
+                    });
                 }
             },
             error:function(){
                 $("#toCreateArticle").modal('hide');
-                alert("系统出错");
+                BootstrapDialog.show({
+                    type : BootstrapDialog.TYPE_DANGER,
+                    title : 'error ',
+                    message : '系统出错',
+                    onshown : function(dialogRef) {
+                        setTimeout(function() {
+                            dialogRef.close();
+                        }, 500);
+                    }
+                });
             }
         });
     }

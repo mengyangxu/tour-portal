@@ -4,7 +4,9 @@ package com.xmy.portal.controller;
 import com.xmy.bean.bean.User;
 import com.xmy.portal.service.UserService;
 import com.xmy.portal.utils.JsonResponse;
+import com.xmy.portal.utils.UrlStatic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,7 +29,7 @@ public class UserController {
     @RequestMapping("/tologin")
     public String login(HttpSession session){
         if(null!=session.getAttribute("user")){
-            return "index";
+            return "redirect:"+ UrlStatic.indexUrl+"index";
         }
         return "login";
     }
@@ -46,7 +48,8 @@ public class UserController {
 
         if(null!=user){
             session.setAttribute("user",user);
-            return  new JsonResponse("http://localhost:8081/index");
+            session.setAttribute("serviceUrl",UrlStatic.serviceUrl);
+            return  new JsonResponse(UrlStatic.indexUrl+"index");
         }
         return new JsonResponse(new Exception());
     }

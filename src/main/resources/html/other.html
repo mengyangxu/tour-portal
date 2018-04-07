@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>云游四海</title>
-    <link rel="shortcut icon" href="//localhost:8081/img/long.jpg"/>
+    <link rel="shortcut icon" href="http://118.25.102.29:8084/img/long.jpg"/>
 	<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">  
 	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -19,8 +19,8 @@
 				</div>
 				<div>
 					<ul class="nav navbar-nav">
-						<li><a href="http://localhost:8081/index">首页</a></li>
-						<li><a href="http://localhost:8081/my">我的主页</a></li>
+						<li><a href="/index">首页</a></li>
+						<li><a href=/my">我的主页</a></li>
 						<li class="dropdown navbar-nav">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								神游伙伴
@@ -92,7 +92,7 @@
 		</div>
 		<div style="float:right;width:20%; border-color: #398439;" >
 			<div>个人相关资料</div>
-			<div>头像<img src="http://localhost:8081/img/head/1.jpg" class="img-responsive img-circle" alt="个人头像" style="width: 50%;"></div>
+			<div>头像<img  th:src="@{'http://118.25.102.29:8084/img'+${user.headPic}}" class="img-responsive img-circle" alt="个人头像" style="width: 50%;"></div>
 		</div>
 	</div>
 	<div style="width: 100%;">footer</div>

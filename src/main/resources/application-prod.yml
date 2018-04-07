@@ -1,0 +1,29 @@
+spring:
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
+    prefix: classpath:/html/
+  application:
+    name: tour-portal
+
+server:
+  port: 80
+  connection-timeout: 10000000
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://118.25.102.29:8761/eureka/
+feign:
+  httpclient:
+    connection-timeout: 10000000
+ribbon:
+  ReadTimeout: 120000   #连接之后，读取超时（可以打断点测试）
+  ConnectTimeout: 30000  #建立连接超时时间
+
+
+com:
+  xmy:
+    properties:
+      indexUrl: http://118.25.102.29/
+      picUrl: http://118.25.102.29:8084/

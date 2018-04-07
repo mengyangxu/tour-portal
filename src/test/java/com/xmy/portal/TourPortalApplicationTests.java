@@ -6,10 +6,12 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.commons.util.IdUtils;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 //@RunWith(SpringRunner.class)
 //@SpringBootTest
@@ -20,8 +22,8 @@ public class TourPortalApplicationTests {
 		//实例化一个Jersey
 		Client client = new Client();
 		//保存图片服务器的请求路径
-
-		String url = "http://localhost:8080/img/2.jpg";
+		String picName = UUID.randomUUID().toString()+".jpg";
+		String url = "http://localhost:8080/img/"+picName;
 		//设置请求路径
 		WebResource resource = client.resource(url);
 		String path = "G:\\img/5.jpg";
