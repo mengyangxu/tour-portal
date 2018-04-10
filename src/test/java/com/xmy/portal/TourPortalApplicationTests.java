@@ -2,6 +2,8 @@ package com.xmy.portal;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+import com.xmy.portal.activemq.Comsumer;
+import com.xmy.portal.activemq.Producter;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,5 +36,20 @@ public class TourPortalApplicationTests {
 		resource.put(String.class, readFileToByteArray);
 		System.out.println("成功发送");
 	}
+	@Test
+	public void test1(){
+		Producter producter = new Producter();
+		producter.init();
+		producter.sendMessage("qqq","www"+":"+"1234");
+		producter.sendMessage("qqq","www"+":"+"1234");
+	}
+	@Test
+	public void test2(){
+		Comsumer comsumer = new Comsumer();
+		comsumer.init();
+		comsumer.getMessage("qqq");
+	}
+
+
 
 }
