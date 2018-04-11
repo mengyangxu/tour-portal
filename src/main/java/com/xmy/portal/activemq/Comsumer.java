@@ -12,7 +12,7 @@ public class Comsumer {
 
     private static final String PASSWORD = ActiveMQConnection.DEFAULT_PASSWORD;
 
-    private static final String BROKEN_URL = "tcp://localhost:61617";  //ActiveMQConnection.DEFAULT_BROKER_URL;
+    private static final String BROKEN_URL = "tcp://localhost:61626";  //ActiveMQConnection.DEFAULT_BROKER_URL;
 
     ConnectionFactory connectionFactory;
 

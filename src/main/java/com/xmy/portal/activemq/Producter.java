@@ -13,7 +13,7 @@ public class Producter {
     //ActiveMq 的默认登录密码
     private static final String PASSWORD = ActiveMQConnection.DEFAULT_PASSWORD;
     //ActiveMQ 的链接地址
-    private static final String BROKEN_URL = "tcp://localhost:61617"; //ActiveMQConnection.DEFAULT_BROKER_URL;
+    private static final String BROKEN_URL = "tcp://localhost:61626"; //ActiveMQConnection.DEFAULT_BROKER_URL;
 
     AtomicInteger count = new AtomicInteger(0);
     //链接工厂

@@ -16,14 +16,27 @@ import javax.websocket.server.ServerEndpoint;
 import com.google.gson.Gson;
 import com.xmy.portal.activemq.Comsumer;
 import com.xmy.portal.activemq.Producter;
+import com.xmy.portal.redis.RedisService;
+import com.xmy.portal.service.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.server.standard.SpringConfigurator;
 
 /** 
  * @ServerEndpoint 
- */  
-@ServerEndpoint("/websocketTest")
+ */
+@ServerEndpoint(value="/websocketTest"/*,configurator = SpringConfigurator.class*/)
 @Component
-public class WebSocketTest {  
+public class WebSocketTest {
+
+    private static ApplicationContext applicationContext;
+    public static void setApplicationContext(ApplicationContext context){
+        applicationContext = context;
+    }
+
     private static int onlineCount = 0;  
     //存放所有登录用户的Map集合，键：每个用户的唯一标识（用户名）
     public String name;
@@ -35,14 +48,22 @@ public class WebSocketTest {
       
     public static void setHttpSession(HttpSession httpSession){  
         WebSocketTest.httpSession=httpSession;  
-    }  
-    /** 
+    }
+
+    //@Autowired
+    private RedisService redisService;
+    //@Autowired
+    private ChatService chatService;
+
+    /**
      * 连接建立成功调用的方法 
      * @param session 
      * 可选的参数。session为与某个客户端的连接会话，需要通过它来给客户端发送数据 
      */  
     @OnOpen  
-    public void onOpen(Session session) {  
+    public void onOpen(Session session) {
+        chatService = (ChatService) applicationContext.getBean("chatService");
+        redisService = (RedisService)applicationContext.getBean("redisService");
         Gson gson=new Gson();  
         this.session = session;
         this.name = httpSession.getAttribute("username").toString();
@@ -101,29 +122,23 @@ public class WebSocketTest {
         if(messageStr.indexOf("@")!=-1){
             String targetname=messageStr.substring(0, messageStr.indexOf("@"));
 
-            Producter producter = new Producter();
-            producter.init();
-            producter.sendMessage(targetname,name+":"+message);
-
             String sourcename="";
+            int flag = 0;
             for (Entry<String,WebSocketTest> entry  : webSocketMap.entrySet()) {
                 //根据接收用户名遍历出接收对象
                 if(targetname.equals(entry.getKey())){
                     try {
-                        for (Entry<String,WebSocketTest> entry1  : webSocketMap.entrySet()) {
+                        /*for (Entry<String,WebSocketTest> entry1  : webSocketMap.entrySet()) {
                             //session在这里作为客户端向服务器发送信息的会话，用来遍历出信息来源
                             if(entry1.getValue().session==session){
                                 sourcename=entry1.getKey();
                             }
-                        }
+                        }*/
                         MessageDto md=new MessageDto();
                         md.setMessageType("message");
-                        md.setData(sourcename+":"+message.substring(messageStr.indexOf("@")+1));
+                        md.setData(name+":"+message.substring(messageStr.indexOf("@")+1));
                         entry.getValue().sendMessage(gson.toJson(md));
-
-                        Comsumer comsumer = new Comsumer();
-                        comsumer.init();
-                        comsumer.getMessage(name);
+                        flag = 1;
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -131,6 +146,10 @@ public class WebSocketTest {
                     }
                 }
 
+            }
+            if(0==flag){
+                redisService.hincr(targetname,name,1);
+                chatService.sys();
             }
 
 
