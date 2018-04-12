@@ -4,6 +4,7 @@ package com.xmy.portal.controller;
 import com.xmy.bean.bean.User;
 import com.xmy.bean.common.Page;
 import com.xmy.bean.vo.ArticleInfo;
+import com.xmy.portal.service.ChatService;
 import com.xmy.portal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,8 @@ public class PageController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ChatService chatService;
 
     final int pageSize = 3;
 

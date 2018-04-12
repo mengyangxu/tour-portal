@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/qyou.css">
     <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/fileinput.min.css">
+    <link rel="stylesheet" href="/css/chat.css">
 
     <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -48,6 +49,26 @@
                                 <li><a href="http://jiudian.ctrip.cn/" target="_blank">携程</a></li>
                                 <li><a href="http://www.tuniu.com/" target="_blank">途牛</a></li>
                                 <li><a href="http://www.lvmama.com/" target="_blank">驴妈妈</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown navbar-nav">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                消息
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu list-group" id="chatTable">
+                                <li class="list-group-item">免费域名注册</li>
+                                <li class="list-group-item">免费 Window 空间托管</li>
+                                <li class="list-group-item">图像的数量</li>
+                                <li class="list-group-item">
+                                    <span class="badge">新</span>
+                                    24*7 支持
+                                </li>
+                                <li class="list-group-item">每年更新成本</li>
+                                <li class="list-group-item">
+                                    <span class="badge">新</span>
+                                    折扣优惠
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -204,6 +225,43 @@
             <!--友情链接模块-->
 
         </div>
+    </div>
+    <!-- 聊天框 -->
+    <div class="modal fade" id="chatBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="chatFromNickname">哥</h4>
+                </div>
+                <div class="modal-body" id="chatlog">
+                    <div class="leftd">
+                        <span ng-class="leftd_h">
+                            <img ng-src="./img/c_pic.pn" />
+                        </span>
+                        <div class="speech left" ng-class="speech left">
+                            穿上一套民族风的裙装,二货，你看你傻样！
+                        </div>
+                    </div>
+                    <div class="rightd">
+                        <span ng-class="rightd_h">
+                            <img ng-src="./img/u_pic.pn" />
+                        </span>
+                        <div class="speech right" ng-class="speech left">
+                            嘻嘻嘻嘻。。。。。。描述写得不好，看不懂可
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="clear: both;">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="chatContent">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="chatCommit();">发送</button>
+                    </span>
+                    </div><!-- /input-group -->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
     </div>
     <!-- 模态框（评论） -->
     <div class="modal fade" id="commentListModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -386,8 +444,104 @@
     }
 </script>
 </div>
+<!-- 聊天script -->
+<script type="text/javascript" th:inline="javascript">
+    $(function(){
+        var userId = [[${session.user.id}]];
+        $.ajax({
+            url: [[${session.serviceUrl}]] + 'getChatList',
+            data: {
+                userId: userId
+            },
+            dataType: 'JSON',
+            type: 'POST',
+            success: function (data) {
+                if ("200" == data.code) {
+                    var chatList = data.data;
+                    var str = "";
+                    for(var i=0;i<chatList.length;i++){
+                        str += '<li class="list-group-item" onclick="chat(this,'+chatList[i].fromId+');">'+chatList[i].fromNickName;
+                        if(0==chatList[i].state){
+                            str += '<span class="badge">未读</span>'
+                        }
+                        str += '</li>';
+                    }
+                    $("#chatTable").html(str);
+                } else {
+
+                }
+            }
+        })
+    });
+    function chat(obj,fromId){
+        $(obj).find("span").remove();
+        var userId = [[${session.user.id}]];
+        $.ajax({
+            url: [[${session.serviceUrl}]] + 'getChatLog',
+            data: {
+                toId: userId,
+                fromId: fromId
+            },
+            dataType: 'JSON',
+            type: 'POST',
+            success: function (data) {
+                if ("200" == data.code) {
+                    var headPic = 'http://118.25.102.29:8084/img'+[[${session.user.headPic}]];
+                    var logList = data.data;
+                    $("#chatFromNickname").val(logList[0].fromnick);
+                    $("#chatFromNickname").attr('userId',logList[0].fromId);
+                    var str = "";
+                    for(var i=0;i<logList.length;i++){
+                        if(logList[i].fromId==userId){
+                            str += '<div class="rightd">' +
+                                '<span class="rightd_h">' +
+                                '<img src="'+ headPic +'">' +
+                                '</span>' +
+                                '<div class="speech right" class="speech left">' + logList[i].content +
+                                '</div>' +
+                                '</div>';
+                        }else {
+                            str += '<div class="leftd">' +
+                                '<span class="leftd_h">' +
+                                '<img src="http://118.25.102.29:8084/img'+ logList[i].frompic +'" />' +
+                                '</span>' +
+                                '<div class="speech left" class="speech left"> ' + logList[i].content +
+                                '</div>' +
+                                '</div>'
+                        }
+                    }
+                    $("#chatlog").html(str);
+                } else {
+
+                }
+            }
+        })
+        $("#chatBox").modal('show');
+    }
+
+    function chatCommit(){
+        var toId = $("#chatFromNickname").attr('userId');
+        var userId = [[${session.user.id}]];
+        $.ajax({
+            url: [[${session.serviceUrl}]] + 'sendChatlog',
+            data: {
+                fromId: userId,
+                toId: toId
+            },
+            dataType: 'JSON',
+            type: 'POST',
+            success: function (data) {
+                if ("200" == data.code) {
+
+                } else {
+
+                }
+            }
+        })
+    }
+</script>
 <script type="text/javascript">
-    //清楚模态框页面缓存
+    //清除模态框页面缓存
     $("#toCreateArticle").on("hidden.bs.modal", function() {
         $("#title").val("");
         $("#content").val("");
