@@ -18,7 +18,7 @@ public class ChartWebsocketController {
     public String chat(String username, HttpServletRequest request, HttpServletResponse response){
         HttpSession session=request.getSession();
         session.setAttribute("username", username);
-        WebSocketTest.setHttpSession(session);
+        //WebSocketTest.setHttpSession(session);
         return "chat";
     }
 

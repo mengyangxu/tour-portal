@@ -165,7 +165,7 @@
                 <br>
                 <div style="clear: both;">
                     <img th:src="@{'http://118.25.102.29:8084/img/'+${info.headPic}}" onerror="this.src='http://118.25.102.29:8084/img/head/0.jpg'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>
-                    <p style="float: left;margin-left: 20px;" th:text="${info.nickname}"></p>
+                    <a th:href="@{'/other?userId='+${info.userId}}" ><p style="float: left;margin-left: 20px;" th:text="${info.nickname}"></p></a>
                     <p style="float: left;margin-left: 20px; color: #D0D0D0;" th:text="'在'+${info.address}+'发布的'"></p>
                     <p style="float: left;margin-left: 20px; color: #D0D0D0;" th:inline="text">[[${info.zanNum}]]人赞</p>
                     <img src="http://118.25.102.29:8084/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 40px;margin-top: -25px;"/>
@@ -177,8 +177,9 @@
                     <p th:text="${info.content}" style="color:#888888;font-style:oblique;font-size: small;float: left;"></p>
                 </div>
                 <div style="float: left; margin-left: 80px;margin-top: 20px;">
-                    <img th:src="@{'http://118.25.102.29:8084'+${info.pics}}">
+                    <img th:src="@{'http://118.25.102.29:8084'+${info.pics}}" height="140" width="200">
                 </div>
+                <br>
             </div>
             <div style="clear: both;margin-top: 180px;margin-right: 20%;">
                 <ul class="pager">
@@ -232,7 +233,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="chatFromNickname">哥</h4>
+                    <h4 class="modal-title" id="chatFromNickname"></h4>
                 </div>
                 <div class="modal-body" id="chatlog">
                     <div class="leftd">
@@ -256,7 +257,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" id="chatContent">
                         <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" onclick="chatCommit();">发送</button>
+                        <button class="btn btn-default" type="button" onclick="chatSend();">发送</button>
                     </span>
                     </div><!-- /input-group -->
                 </div>
@@ -278,7 +279,7 @@
                 <div class="modal-body" id="commentList"></div>
                 <div class="modal-body">
                     <label>评论：</label>
-                    <input type="text" id="commentContent">
+                    <input type="text" class="form-control" id="commentContent">
                     <button value="发表" onclick="addComment();"></button>
                 </div>
                 <div class="modal-footer">
@@ -301,12 +302,12 @@
                     </button>
                     <h4 class="modal-title" >
                         <label>标题：</label>
-                        <input type="text" id="title">
+                        <input class="form-control" type="text" id="title">
                     </h4>
                 </div>
                 <div class="modal-body">
                     <label>内容：</label>
-                    <input type="text" id="content">
+                    <input class="form-control" type="text" id="content">
                 </div>
 
 
@@ -340,13 +341,18 @@
     });
 
 </script>
+<!-- 评论 -->
 <script type="text/javascript"  th:inline="javascript">
     function addComment(){
         var userId = [[${session?.user?.id}]];
+        if(null==userId||""==userId){
+            window.location.href = "/user/tologin";
+            return;
+        }
         var articleId = $(".article_id").val();
         var content = $("#commentContent").val();
         $.ajax({
-            url:[[${session.serviceUrl}]]+'addComment',
+            url:[[${session?.serviceUrl}]]+'addComment',
             data:{
                 userId: userId,
                 articleId: articleId,
@@ -403,7 +409,7 @@
         var articleId = $(obj).parent().parent().find(".articleId").text();
         $("#commentListModel").modal('show');
         $.ajax({
-            url:[[${session.serviceUrl}]]+'commentList',
+            url:[[${session?.serviceUrl}]]+'commentList',
             data:{
                 articleId: articleId
             },
@@ -421,7 +427,8 @@
                         str += '<input class="article_id" type="text" style="display: none" value="'+list[0].articleId+'"/>';
                         $("#commentList").html(str);
                     } else{
-                        $("#commentList").html('');
+                        str += '<input class="article_id" type="text" style="display: none" value="'+ articleId +'"/>'
+                        $("#commentList").html(str);
                     }
                 }else {
                     $("#commentList").html('');
@@ -432,7 +439,7 @@
                 BootstrapDialog.show({
                     type : BootstrapDialog.TYPE_DANGER,
                     title : 'error ',
-                    message : '系统出错',
+                    message : '请登陆',
                     onshown : function(dialogRef) {
                         setTimeout(function() {
                             dialogRef.close();
@@ -446,10 +453,21 @@
 </div>
 <!-- 聊天script -->
 <script type="text/javascript" th:inline="javascript">
+    var websocket = null;
+
     $(function(){
-        var userId = [[${session.user.id}]];
+        var userId = [[${session?.user?.id}]];
+        if(null==userId||""==userId){
+            return;
+        }
+        //判断当前浏览器是否支持WebSocket
+        if ('WebSocket' in window) {
+            websocket = new WebSocket("ws://localhost:8081/websocketTest/"+userId);
+        } else {
+            alert('当前浏览器 Not support websocket')
+        }
         $.ajax({
-            url: [[${session.serviceUrl}]] + 'getChatList',
+            url: [[${session?.serviceUrl}]] + 'getChatList',
             data: {
                 userId: userId
             },
@@ -475,9 +493,10 @@
     });
     function chat(obj,fromId){
         $(obj).find("span").remove();
-        var userId = [[${session.user.id}]];
+        var userId = [[${session?.user?.id}]];
+        var fromnick = $(obj).text();
         $.ajax({
-            url: [[${session.serviceUrl}]] + 'getChatLog',
+            url: [[${session?.serviceUrl}]] + 'getChatLog',
             data: {
                 toId: userId,
                 fromId: fromId
@@ -486,10 +505,10 @@
             type: 'POST',
             success: function (data) {
                 if ("200" == data.code) {
-                    var headPic = 'http://118.25.102.29:8084/img'+[[${session.user.headPic}]];
+                    var headPic = 'http://118.25.102.29:8084/img'+[[${session?.user?.headPic}]];
                     var logList = data.data;
-                    $("#chatFromNickname").val(logList[0].fromnick);
-                    $("#chatFromNickname").attr('userId',logList[0].fromId);
+                    $("#chatFromNickname").text(fromnick);
+                    $("#chatFromNickname").attr('userId',fromId);
                     var str = "";
                     for(var i=0;i<logList.length;i++){
                         if(logList[i].fromId==userId){
@@ -497,7 +516,7 @@
                                 '<span class="rightd_h">' +
                                 '<img src="'+ headPic +'">' +
                                 '</span>' +
-                                '<div class="speech right" class="speech left">' + logList[i].content +
+                                '<div class="speech right">' + logList[i].content +
                                 '</div>' +
                                 '</div>';
                         }else {
@@ -505,7 +524,7 @@
                                 '<span class="leftd_h">' +
                                 '<img src="http://118.25.102.29:8084/img'+ logList[i].frompic +'" />' +
                                 '</span>' +
-                                '<div class="speech left" class="speech left"> ' + logList[i].content +
+                                '<div class="speech left"> ' + logList[i].content +
                                 '</div>' +
                                 '</div>'
                         }
@@ -518,26 +537,105 @@
         })
         $("#chatBox").modal('show');
     }
-
-    function chatCommit(){
-        var toId = $("#chatFromNickname").attr('userId');
-        var userId = [[${session.user.id}]];
+    function chat2(fromId){
+        var fromId2 = Number(fromId);
+        var userId = [[${session?.user?.id}]];
         $.ajax({
-            url: [[${session.serviceUrl}]] + 'sendChatlog',
+            url: [[${session?.serviceUrl}]] + 'getChatLog',
             data: {
-                fromId: userId,
-                toId: toId
+                toId: userId,
+                fromId: fromId2
             },
             dataType: 'JSON',
             type: 'POST',
             success: function (data) {
                 if ("200" == data.code) {
-
+                    var headPic = 'http://118.25.102.29:8084/img'+[[${session?.user?.headPic}]];
+                    var logList = data.data;
+                    $("#chatFromNickname").text("游客");
+                    $("#chatFromNickname").attr('userId',fromId);
+                    var str = "";
+                    for(var i=0;i<logList.length;i++){
+                        if(logList[i].fromId==userId){
+                            str += '<div class="rightd">' +
+                                '<span class="rightd_h">' +
+                                '<img src="'+ headPic +'">' +
+                                '</span>' +
+                                '<div class="speech right">' + logList[i].content +
+                                '</div>' +
+                                '</div>';
+                        }else {
+                            str += '<div class="leftd">' +
+                                '<span class="leftd_h">' +
+                                '<img src="http://118.25.102.29:8084/img'+ logList[i].frompic +'" />' +
+                                '</span>' +
+                                '<div class="speech left"> ' + logList[i].content +
+                                '</div>' +
+                                '</div>'
+                        }
+                    }
+                    $("#chatlog").html(str);
                 } else {
 
                 }
             }
         })
+        $("#chatBox").modal('show');
+    }
+    //连接发生错误的回调方法
+    websocket.onerror = function() {
+        alert("WebSocket连接发生错误");
+    };
+    //连接成功建立的回调方法
+    websocket.onopen = function() {
+        //alert("WebSocket连接成功");
+    }
+    //接收到消息的回调方法
+    websocket.onmessage = function(event) {
+        debugger
+        var messageJson=eval("("+event.data+")");
+        if(messageJson.messageType=="message"){
+            chatReceive(messageJson.data,messageJson.fromId);
+        }
+        if(messageJson.messageType=="onlineCount"){
+            //document.getElementById('onlineCount').innerHTML=messageJson.data;
+        }
+
+    }
+    //连接关闭的回调方法
+    websocket.onclose = function() {
+       // alert("WebSocket连接关闭");
+    }
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function() {
+        closeWebSocket();
+    }
+    //关闭WebSocket连接
+    function closeWebSocket() {
+        websocket.close();
+    }
+    //发送消息
+    function chatSend() {
+        var headPic = 'http://118.25.102.29:8084/img'+[[${session?.user?.headPic}]];
+        var toId = $("#chatFromNickname").attr('userId');
+        var message = $("#chatContent").val();
+        websocket.send(toId+"@"+message);
+        var str ='<div class="rightd">' +
+            '<span class="rightd_h">' +
+            '<img src="'+ headPic +'">' +
+            '</span>' +
+            '<div class="speech right">' + message +
+            '</div>' +
+            '</div>';
+        $("#chatlog").append(str);
+        $("#chatContent").val('');
+    }
+    //接收消息
+    function chatReceive(mes,fromId){
+        //chat2(fromId);
+        var str = '<div class="leftd">' + $(".leftd").eq(0).html() + '</div>';
+        $("#chatlog").append(str);
+        $("#chatlog").find(".speech.left:last").text(mes);
     }
 </script>
 <script type="text/javascript">
@@ -553,7 +651,8 @@
         var index = $(this).index();
         $(".cn-slide").removeClass("cszdx");
         $(".cn-slide").eq(index).addClass("cszdx");
-        $(".cnb-wp").eq(index).addClass("bgzdx").siblings().removeClass("bgzdx");
+        $(".cnb-wp.bgzdx").removeClass("bgzdx");
+        $(".cnb-wp").eq(index).addClass("bgzdx");
     });
 
     var a = $(".cn-sy li");
@@ -571,7 +670,8 @@
         var index = $(this).index();
         $(".cn-slide").removeClass("cszdx");
         $(".cn-slide").eq(index).addClass("cszdx");
-        $(".cnb-wp").eq(index).addClass("bgzdx").siblings().removeClass("bgzdx");
+        $(".cnb-wp.bgzdx").removeClass("bgzdx");
+        $(".cnb-wp").eq(index).addClass("bgzdx");
         clearInterval(timer);
     });
     $(".cn-sy li").mouseleave(function(){
@@ -599,6 +699,8 @@
     }
 
     function addArticle(){
+
+
         var title = $("#title").val();
         var content = $("#content").val();
         $.ajax({

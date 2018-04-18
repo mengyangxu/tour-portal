@@ -114,15 +114,15 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<label>昵称：</label><input type="text" th:value="${user.nickname}" id="nickname"><br>
+					<label>昵称：</label><input class="form-control" type="text" th:value="${user.nickname}" id="nickname"><br>
 					<label>性别：</label>
 						<select id="sex">
 							<option value="">请选择</option>
 							<option value="1">男</option>
 							<option value="2">女</option>
 						</select>
-					<label>邮箱：</label><input type="text" th:value="${user.email}" id="email"><br>
-					<label>号码：</label><input type="text" th:value="${user.phone}" id="phone">
+					<label>邮箱：</label><input type="text" class="form-control" th:value="${user.email}" id="email"><br>
+					<label>号码：</label><input type="text" class="form-control" th:value="${user.phone}" id="phone">
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭

@@ -11,24 +11,30 @@ import javax.websocket.OnClose;
 import javax.websocket.OnError;  
 import javax.websocket.OnMessage;  
 import javax.websocket.OnOpen;  
-import javax.websocket.Session;  
-import javax.websocket.server.ServerEndpoint;  
+import javax.websocket.Session;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
 import com.google.gson.Gson;
+import com.xmy.bean.bean.User;
 import com.xmy.portal.activemq.Comsumer;
 import com.xmy.portal.activemq.Producter;
 import com.xmy.portal.redis.RedisService;
 import com.xmy.portal.service.ChatService;
+import com.xmy.portal.utils.HttpHelper;
+import com.xmy.portal.utils.UrlStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
+import sun.net.util.URLUtil;
+import sun.net.www.http.HttpClient;
 
 /** 
  * @ServerEndpoint 
  */
-@ServerEndpoint(value="/websocketTest"/*,configurator = SpringConfigurator.class*/)
+@ServerEndpoint(value="/websocketTest/{userId}"/*,configurator = SpringConfigurator.class*/)
 @Component
 public class WebSocketTest {
 
@@ -44,11 +50,11 @@ public class WebSocketTest {
     //session作为用户简历连接的唯一会话，可以用来区别每个用户  
     private Session session;  
     //httpsession用以在建立连接的时候获取登录用户的唯一标识（登录名）,获取到之后以键值对的方式存在Map对象里面  
-    private static HttpSession httpSession;  
+    /*private static HttpSession httpSession;
       
-    public static void setHttpSession(HttpSession httpSession){  
+    public static void setHttpSession(HttpSession httpSession){
         WebSocketTest.httpSession=httpSession;  
-    }
+    }*/
 
     //@Autowired
     private RedisService redisService;
@@ -61,19 +67,20 @@ public class WebSocketTest {
      * 可选的参数。session为与某个客户端的连接会话，需要通过它来给客户端发送数据 
      */  
     @OnOpen  
-    public void onOpen(Session session) {
-        chatService = (ChatService) applicationContext.getBean("chatService");
-        redisService = (RedisService)applicationContext.getBean("redisService");
-        Gson gson=new Gson();  
+    public void onOpen(Session session,@PathParam("userId") String userId) {
+        Gson gson=new Gson();
         this.session = session;
-        this.name = httpSession.getAttribute("username").toString();
+        //User user = (User)httpSession.getAttribute("user");
+        //this.name = user.getId().toString();
+        //this.name = httpSession.getAttribute("username").toString();
+        this.name = userId;
         webSocketMap.put(this.name, this);
         addOnlineCount();
         MessageDto md=new MessageDto();
-        md.setMessageType("onlineCount");  
+        md.setMessageType("onlineCount");
         md.setData(onlineCount+"");
-        sendOnlineCount(gson.toJson(md));  
-        System.out.println(getOnlineCount());  
+        sendOnlineCount(gson.toJson(md));
+        System.out.println(getOnlineCount());
     }  
     /** 
      * 向所有在线用户发送在线人数 
@@ -121,7 +128,7 @@ public class WebSocketTest {
 
         if(messageStr.indexOf("@")!=-1){
             String targetname=messageStr.substring(0, messageStr.indexOf("@"));
-
+            String content = message.substring(messageStr.indexOf("@")+1);
             String sourcename="";
             int flag = 0;
             for (Entry<String,WebSocketTest> entry  : webSocketMap.entrySet()) {
@@ -136,10 +143,22 @@ public class WebSocketTest {
                         }*/
                         MessageDto md=new MessageDto();
                         md.setMessageType("message");
-                        md.setData(name+":"+message.substring(messageStr.indexOf("@")+1));
+                        md.setData(content);
+                        md.setFromId(targetname);
                         entry.getValue().sendMessage(gson.toJson(md));
                         flag = 1;
 
+                        Map<String,String> map = new HashMap<>();
+                        map.put("fromId",name);
+                        map.put("toId",targetname);
+                        map.put("content",content);
+                        map.put("state","1");
+                        try {
+                            HttpHelper.post(map, UrlStatic.serviceUrl+"saveChatLog");
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            continue;
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                         continue;
@@ -148,8 +167,17 @@ public class WebSocketTest {
 
             }
             if(0==flag){
-                redisService.hincr(targetname,name,1);
-                chatService.sys();
+                Map<String,String> map = new HashMap<>();
+                map.put("fromId",name);
+                map.put("toId",targetname);
+                map.put("content",content);
+                map.put("state","1");
+                try {
+                    HttpHelper.post(map, UrlStatic.serviceUrl+"saveChatLog");
+                }catch (Exception e){
+                    e.printStackTrace();
+
+                }
             }
 
 
@@ -191,7 +219,5 @@ public class WebSocketTest {
     public static synchronized void subOnlineCount() {  
         WebSocketTest.onlineCount--;  
     }
-
-
 
 }

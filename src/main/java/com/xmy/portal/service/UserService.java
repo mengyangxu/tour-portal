@@ -44,4 +44,6 @@ public interface UserService {
 
     @RequestMapping("/getAdverts")
     List<User> getAdverts();
+
+    //void saveIp(String ip);
 }

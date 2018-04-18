@@ -8,6 +8,15 @@ package com.xmy.portal.socket;
 public class MessageDto {
     private String messageType;
     private String data;
+    private String fromId;
+
+    public String getFromId() {
+        return fromId;
+    }
+
+    public void setFromId(String fromId) {
+        this.fromId = fromId;
+    }
 
     public String getMessageType() {
         return messageType;
