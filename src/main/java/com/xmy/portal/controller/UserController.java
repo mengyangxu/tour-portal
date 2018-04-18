@@ -3,6 +3,7 @@ package com.xmy.portal.controller;
 
 import com.xmy.bean.bean.User;
 import com.xmy.portal.service.UserService;
+import com.xmy.portal.socket.WebSocketTest;
 import com.xmy.portal.utils.JsonResponse;
 import com.xmy.portal.utils.UrlStatic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class UserController {
 
         if(null!=user){
             session.setAttribute("user",user);
-            session.setAttribute("serviceUrl",UrlStatic.serviceUrl);
+
             return  new JsonResponse(UrlStatic.indexUrl+"index");
         }
         return new JsonResponse(new Exception());

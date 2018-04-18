@@ -6,6 +6,7 @@ import com.xmy.bean.common.Page;
 import com.xmy.bean.vo.ArticleInfo;
 import com.xmy.portal.service.ChatService;
 import com.xmy.portal.service.UserService;
+import com.xmy.portal.utils.UrlStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +38,11 @@ public class PageController {
             String currentPageStr = request.getParameter("currentPage").toString();
             currentPage = Integer.valueOf(currentPageStr);
         }
+        //校验登陆
+        if(currentPage>1&&null==request.getSession().getAttribute("user")){
+            return "redirect:"+ UrlStatic.indexUrl+"user/tologin";
+        }
+
         page = new Page(pageSize,0,currentPage);
         List<ArticleInfo> list = userService.getArticleInfo(page);
         list = this.check(list);
@@ -47,6 +53,8 @@ public class PageController {
         request.setAttribute("adverts",adverts);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPage",page.getTotalPage());
+        request.getSession().setAttribute("serviceUrl",UrlStatic.serviceUrl);
+
         return "index";
     }
 
@@ -59,6 +67,18 @@ public class PageController {
         request.setAttribute("user",uu);
         return "my";
     }
+
+    @RequestMapping("/other")
+    public String other(HttpSession session, HttpServletRequest request){
+        String id = request.getParameter("userId").toString();
+        int userId = Integer.valueOf(id);
+        List<ArticleInfo> list = userService.getArticleInfoById(userId);
+        User uu = userService.getById(userId);
+        request.setAttribute("list",list);
+        request.setAttribute("user",uu);
+        return "other";
+    }
+
 
 
 
