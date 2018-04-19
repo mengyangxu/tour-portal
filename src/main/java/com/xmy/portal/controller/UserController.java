@@ -60,7 +60,7 @@ public class UserController {
         return "index";
     }
 
-    @RequestMapping("/newBranch2")
+    @RequestMapping("/newBranch3")
     public String newBranch(){
         return "index";
     }
