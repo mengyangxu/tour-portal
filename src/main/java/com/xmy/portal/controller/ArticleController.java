@@ -50,7 +50,7 @@ public class ArticleController {
         for(int i=0;i<files.size();i++){
             String picName = UUID.randomUUID().toString()+".jpg";
             String picUrl = UrlStatic.picUrl+"img/article/"+picName;
-            File file2 = new File("C:\\test\\111.png"); //临时文件
+            File file2 = new File(UrlStatic.pictransit); //临时文件
             FileUtils.copyInputStreamToFile(files.get(i).getInputStream(), file2);
             JerseyUpload.upload(file2,picUrl);
             if(i<files.size()-1) {

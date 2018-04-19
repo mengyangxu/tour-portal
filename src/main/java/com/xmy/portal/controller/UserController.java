@@ -3,11 +3,9 @@ package com.xmy.portal.controller;
 
 import com.xmy.bean.bean.User;
 import com.xmy.portal.service.UserService;
-import com.xmy.portal.socket.WebSocketTest;
 import com.xmy.portal.utils.JsonResponse;
 import com.xmy.portal.utils.UrlStatic;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;

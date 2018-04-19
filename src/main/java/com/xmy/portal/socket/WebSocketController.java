@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;  
 import java.util.Map;  
 import java.util.Map.Entry;
-import java.util.UUID;
 
-import javax.servlet.http.HttpSession;  
-import javax.websocket.OnClose;  
+import javax.websocket.OnClose;
 import javax.websocket.OnError;  
 import javax.websocket.OnMessage;  
 import javax.websocket.OnOpen;  
@@ -15,28 +13,19 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import com.google.gson.Gson;
-import com.xmy.bean.bean.User;
-import com.xmy.portal.activemq.Comsumer;
-import com.xmy.portal.activemq.Producter;
 import com.xmy.portal.redis.RedisService;
 import com.xmy.portal.service.ChatService;
-import com.xmy.portal.utils.HttpHelper;
+import com.xmy.portal.utils.HttpClientUtil;
 import com.xmy.portal.utils.UrlStatic;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.server.standard.SpringConfigurator;
-import sun.net.util.URLUtil;
-import sun.net.www.http.HttpClient;
 
 /** 
  * @ServerEndpoint 
  */
 @ServerEndpoint(value="/websocketTest/{userId}"/*,configurator = SpringConfigurator.class*/)
 @Component
-public class WebSocketTest {
+public class WebSocketController {
 
     private static ApplicationContext applicationContext;
     public static void setApplicationContext(ApplicationContext context){
@@ -46,7 +35,7 @@ public class WebSocketTest {
     private static int onlineCount = 0;  
     //存放所有登录用户的Map集合，键：每个用户的唯一标识（用户名）
     public String name;
-    private static Map<String,WebSocketTest> webSocketMap = new HashMap<String,WebSocketTest>();  
+    private static Map<String, WebSocketController> webSocketMap = new HashMap<String, WebSocketController>();
     //session作为用户简历连接的唯一会话，可以用来区别每个用户  
     private Session session;  
     //httpsession用以在建立连接的时候获取登录用户的唯一标识（登录名）,获取到之后以键值对的方式存在Map对象里面  
@@ -56,10 +45,6 @@ public class WebSocketTest {
         WebSocketTest.httpSession=httpSession;  
     }*/
 
-    //@Autowired
-    private RedisService redisService;
-    //@Autowired
-    private ChatService chatService;
 
     /**
      * 连接建立成功调用的方法 
@@ -87,7 +72,7 @@ public class WebSocketTest {
      * @param message 
      */  
     public void sendOnlineCount(String message){  
-        for (Entry<String,WebSocketTest> entry  : webSocketMap.entrySet()) {  
+        for (Entry<String, WebSocketController> entry  : webSocketMap.entrySet()) {
             try {  
                 entry.getValue().sendMessage(message);  
             } catch (IOException e) {  
@@ -101,7 +86,7 @@ public class WebSocketTest {
      */  
     @OnClose  
     public void onClose() {  
-        for (Entry<String,WebSocketTest> entry  : webSocketMap.entrySet()) {  
+        for (Entry<String, WebSocketController> entry  : webSocketMap.entrySet()) {
             if(entry.getValue().session==this.session){  
                 webSocketMap.remove(entry.getKey());  
                 break;  
@@ -131,7 +116,7 @@ public class WebSocketTest {
             String content = message.substring(messageStr.indexOf("@")+1);
             String sourcename="";
             int flag = 0;
-            for (Entry<String,WebSocketTest> entry  : webSocketMap.entrySet()) {
+            for (Entry<String, WebSocketController> entry  : webSocketMap.entrySet()) {
                 //根据接收用户名遍历出接收对象
                 if(targetname.equals(entry.getKey())){
                     try {
@@ -154,7 +139,7 @@ public class WebSocketTest {
                         map.put("content",content);
                         map.put("state","1");
                         try {
-                            HttpHelper.post(map, UrlStatic.serviceUrl+"saveChatLog");
+                            HttpClientUtil.getInstance().doPostJsonRequestByContentType(UrlStatic.serviceUrl+"saveChatLog",map,"");
                         }catch (Exception e){
                             e.printStackTrace();
                             continue;
@@ -173,7 +158,7 @@ public class WebSocketTest {
                 map.put("content",content);
                 map.put("state","1");
                 try {
-                    HttpHelper.post(map, UrlStatic.serviceUrl+"saveChatLog");
+                    HttpClientUtil.getInstance().doPostJsonRequestByContentType(UrlStatic.serviceUrl+"saveChatLog",map,"");
                 }catch (Exception e){
                     e.printStackTrace();
 
@@ -213,11 +198,11 @@ public class WebSocketTest {
     }  
   
     public static synchronized void addOnlineCount() {  
-        WebSocketTest.onlineCount++;  
+        WebSocketController.onlineCount++;
     }  
   
     public static synchronized void subOnlineCount() {  
-        WebSocketTest.onlineCount--;  
+        WebSocketController.onlineCount--;
     }
 
 }
