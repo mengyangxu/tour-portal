@@ -13,10 +13,12 @@
     <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+
     <script src="/js/fileinput.min.js"></script>
     <script src="/js/zh.js"></script>
     <link rel="stylesheet" href="/css/bootstrap-dialog.css">
     <script src="/js/bootstrap-dialog.js"></script>
+    <script src="/js/bootstrap-paginator.js"></script>
     <style  type="text/css">
         a{
             cursor:pointer;
@@ -34,7 +36,8 @@
         <nav class="navbar navbar-inverse" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <p style="margin-top: 15px;color: #fcf8e3" th:inline="text">欢迎你，[[${session?.user?.nickname}]]!</p>
+                    <p style="margin-top: 15px;color: #fcf8e3" th:if="${session?.user!=null}" th:inline="text">欢迎你，[[${session?.user?.nickname}]]!</p>
+                    <p style="margin-top: 15px;color: #fcf8e3" th:if="${session?.user==null}" th:inline="text">欢迎你，游客</p>
                 </div>
                 <div>
                     <ul class="nav navbar-nav">
@@ -159,35 +162,8 @@
 
     <!--内容列表部分-->
     <div id="conContainer" style="margin-left: 15%">
-        <div>
-
-            <div th:each="info, state: ${list}">
-                <br>
-                <div style="clear: both;">
-                    <img th:src="@{'http://118.25.102.29:8084/img/'+${info.headPic}}" onerror="this.src='http://118.25.102.29:8084/img/head/0.jpg'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>
-                    <a th:href="@{'/other?userId='+${info.userId}}" ><p style="float: left;margin-left: 20px;" th:text="${info.nickname}"></p></a>
-                    <p style="float: left;margin-left: 20px; color: #D0D0D0;" th:text="'在'+${info.address}+'发布的'"></p>
-                    <p style="float: left;margin-left: 20px; color: #D0D0D0;" th:inline="text">[[${info.zanNum}]]人赞</p>
-                    <img src="http://118.25.102.29:8084/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 40px;margin-top: -25px;"/>
-                    <button style="margin-left: 200px;" class="btn btn-primary btn-lg" data-toggle="modal" onclick="commentList(this);">评论</button>
-                </div>
-                <div class="文章" style="float: left; text-indent:30px; margin-left: 50px;width:55%;">
-                    <p class="articleId" th:text="${info.id}" style="display: none"/>
-                    <p th:text="'标题:'+${info.title}" style="font-size: larger"></p>
-                    <p th:text="${info.content}" style="color:#888888;font-style:oblique;font-size: small;float: left;"></p>
-                </div>
-                <div style="float: left; margin-left: 80px;margin-top: 20px;">
-                    <img th:src="@{'http://118.25.102.29:8084'+${info.pics}}" height="140" width="200">
-                </div>
-                <br>
-            </div>
-            <div style="clear: both;margin-top: 180px;margin-right: 20%;">
-                <ul class="pager">
-                    <li><a th:href="@{'/index?currentPage='+${currentPage-1}}" id="previous">Previous</a></li>
-                    <li><a th:href="@{'/index?currentPage='+${currentPage+1}}" id="nextPage">Next</a></li>
-                </ul>
-            </div>
-        </div>
+        <div id="ArticleContent"></div><br>
+        <div id="example" style="text-align: center; margin-top: 50px; margin-bottom: 50px; clear: both;"> <ul id="pageLimit" style="margin: auto;"></ul> </div>
     </div>
 
     <!-- 底部调用文件 -->
@@ -406,7 +382,7 @@
     }
 
     function commentList(obj){
-        var articleId = $(obj).parent().parent().find(".articleId").text();
+        var articleId = $(obj).parent().next().find(".articleId").text();
         $("#commentListModel").modal('show');
         $.ajax({
             url:[[${session?.serviceUrl}]]+'commentList',
@@ -760,8 +736,107 @@
 
     //关注
 </script>
+<!-- 首页 -->
+<script type="text/javascript" th:inline="javascript">
+    $(function () {
+        var pageNum = 3;
+        var totalPage = 3;
+
+        $.ajax({
+            url:[[${session?.serviceUrl}]] + 'manage/getArticles',
+            type:'POST',
+            async: false,
+            data:{'page':1,'pageSize':pageNum},
+            dataType:'JSON',
+            success:function (callback) {
+                var list = callback.data.list;
+                var str = '';
+                for(var i=0;i<list.length;i++){
+                    var info = list[i];
+                    str +=
+                            '<br>'+
+                        '<div style="clear: both;">'+
+                        '<img src="http://118.25.102.29:8084/img/'+info.headPic+'" onerror="this.src=\'http://118.25.102.29:8084/img/head/0.jpg\'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>'+
+                        '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;" text="'+ info.nickname +'"></p></a>'+
+                        '<p style="float: left;margin-left: 20px; color: #D0D0D0;">在'+ info.address +' 发布的</p>'+
+                        '<p style="float: left;margin-left: 20px; color: #D0D0D0;">'+ info.zanNum +'人赞</p>'+
+                        '<img src="http://118.25.102.29:8084/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 40px;margin-top: -25px;"/>'+
+                        '<button style="margin-left: 200px;" class="btn btn-primary btn-lg" data-toggle="modal" onclick="commentList(this);">评论</button>'+
+                        '</div>'+
+                        '<div class="文章" style="float: left; text-indent:30px; margin-left: 50px;width:55%;">'+
+                        '<p class="articleId" style="display: none">'+info.id+'</p>'+
+                        '<p style="font-size: larger">标题：'+ info.title +'</p>'+
+                        '<p style="color:#888888;font-style:oblique;font-size: small;float: left;">'+info.content+'</p>'+
+                        '</div>'+
+                        '<div style="float: left; margin-left: 80px;margin-top: 20px;">'+
+                        '<img src="http://118.25.102.29:8084'+info.pics+'" height="140" width="200">'+
+                        '</div>'+
+                        '<br>';
+                }
+                $('#ArticleContent').html(str);
+                totalPage = callback.data.totalPage;
+                $('#last_page').text(totalPage);
+            }
+        });
+        $('#pageLimit').bootstrapPaginator({
+            currentPage: 1,
+            totalPages: totalPage,
+            size:"normal",
+            bootstrapMajorVersion: 3,
+            alignment:"right",
+            itemTexts: function (type, page, current) {
+                switch (type) {
+                    case "first": return "首页";
+                    case "prev": return "上一页";
+                    case "next": return "下一页";
+                    case "last": return "末页";
+                    case "page": return page;
+                }//默认显示的是第一页。
+            },
+            onPageClicked: function (event, originalEvent, type, page){//给每个页眉绑定一个事件，其实就是ajax请求，其中page变量为当前点击的页上的数字。
+                $.ajax({
+                    url:[[${session?.serviceUrl}]] + 'manage/getArticles',
+                    type:'POST',
+                    data:{'page':page,'pageSize':pageNum},
+                    dataType:'JSON',
+                    success:function (callback) {
+                        var list = callback.data.list;
+                        var str = '';
+                        for(var i=0;i<list.length;i++){
+                            var info = list[i];
+                            str +=
+                                    '<br>'+
+                                '<div style="clear: both;">'+
+                                '<img src="http://118.25.102.29:8084/img/'+info.headPic+'" onerror="this.src=\'http://118.25.102.29:8084/img/head/0.jpg\'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>'+
+                                '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;" text="'+ info.nickname +'"></p></a>'+
+                                '<p style="float: left;margin-left: 20px; color: #D0D0D0;">在'+ info.address +' 发布的</p>'+
+                                '<p style="float: left;margin-left: 20px; color: #D0D0D0;">'+ info.zanNum +'人赞</p>'+
+                                '<img src="http://118.25.102.29:8084/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 40px;margin-top: -25px;"/>'+
+                                '<button style="margin-left: 200px;" class="btn btn-primary btn-lg" data-toggle="modal" onclick="commentList(this);">评论</button>'+
+                                '</div>'+
+                                '<div class="文章" style="float: left; text-indent:30px; margin-left: 50px;width:55%;">'+
+                                '<p class="articleId" style="display: none">'+info.id+'</p>'+
+                                '<p style="font-size: larger">标题：'+ info.title +'</p>'+
+                                '<p style="color:#888888;font-style:oblique;font-size: small;float: left;">'+info.content+'</p>'+
+                                '</div>'+
+                                '<div style="float: left; margin-left: 80px;margin-top: 20px;">'+
+                                '<img src="http://118.25.102.29:8084'+info.pics+'" height="140" width="200">'+
+                                '</div>'+
+                                '<br>';
+                        }
+                        $('#ArticleContent').html(str);
+                        totalPage = callback.data.totalPage;
+                        $('#last_page').text(totalPage);
+                    }
+                })
+            }
+        });
+    });
+</script>
 <!-- js文件 -->
-<script src="http://common1.qyerstatic.com/bbs/js/index/index_js_btm_1954eb6a3dbe1143fea36b7629b9a0e1.js"></script>
+<script src="http://common1.qyerstatic.com/bbs/js/index/index_js_btm_1954eb6a3dbe1143fea36b7629b9a0e1.js">
+
+</script>
 
 </body>
 </html>
