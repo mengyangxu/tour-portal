@@ -60,18 +60,7 @@
                                 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu list-group" id="chatTable">
-                                <li class="list-group-item">免费域名注册</li>
-                                <li class="list-group-item">免费 Window 空间托管</li>
-                                <li class="list-group-item">图像的数量</li>
-                                <li class="list-group-item">
-                                    <span class="badge">新</span>
-                                    24*7 支持
-                                </li>
-                                <li class="list-group-item">每年更新成本</li>
-                                <li class="list-group-item">
-                                    <span class="badge">新</span>
-                                    折扣优惠
-                                </li>
+
                             </ul>
                         </li>
                     </ul>
@@ -162,7 +151,22 @@
 
     <!--内容列表部分-->
     <div id="conContainer" style="margin-left: 15%">
-        <div id="ArticleContent"></div><br>
+        <div>
+                <label style="float: left;">时间：</label>
+                <select class="form-control" style="width:200px; float: left" id="nowdaysSearch">
+                    <option value="">请选择</option>
+                    <option value="week">最近一周</option>
+                    <option value="month">最近一月</option>
+                </select>
+                <label style="float: left;margin-left: 50px;">板块：</label>
+                <select class="form-control" style="width:200px;float: left" id="plateSearch">
+                    <option value="">请选择</option>
+                    <option th:each="info, state:${plates}" th:value="${info.id}" th:text="${info.name}"/>
+                </select>
+                <button class="btn btn-default" style="float: left;margin-left: 50px;" type="button" onclick="articleSearch();">搜索</button>
+        </div>
+        <br style="clear: both;">
+        <div id="ArticleContent" style="margin-top: 50px;"></div><br>
         <div id="example" style="text-align: center; margin-top: 50px; margin-bottom: 50px; clear: both;"> <ul id="pageLimit" style="margin: auto;"></ul> </div>
     </div>
 
@@ -739,22 +743,48 @@
 <!-- 首页 -->
 <script type="text/javascript" th:inline="javascript">
     $(function () {
+        showIndex();
+    });
+    function articleSearch(){
+        showIndex();
+    }
+    function showIndex(){
+        var plateValue = $("#plateSearch").val();
+        var plate = null;
+        if(""!=plateValue){
+            plate = Number(plateValue);
+        }
+        var nowdays = $("#nowdaysSearch").val();
         var pageNum = 3;
         var totalPage = 3;
-
+        var formdata = {
+            'currentPage':1,
+            'pageSize':pageNum,
+            'nowdays':nowdays,
+            'plate':plate
+        };
         $.ajax({
             url:[[${session?.serviceUrl}]] + 'manage/getArticles',
             type:'POST',
             async: false,
-            data:{'page':1,'pageSize':pageNum},
+            data:JSON.stringify(formdata),
+            contentType: 'application/json;charset=utf-8',
             dataType:'JSON',
             success:function (callback) {
                 var list = callback.data.list;
                 var str = '';
                 for(var i=0;i<list.length;i++){
                     var info = list[i];
+                    var picture = info.pics;
+                    if(picture.indexOf(",") != -1){
+                        picture = picture.split(",",1);
+                    }
+                    var content = info.content;
+                    if(content.length>200){
+                        content = content.substring(0,200);
+                    }
                     str +=
-                            '<br>'+
+                        '<br>'+
                         '<div style="clear: both;">'+
                         '<img src="http://118.25.102.29:8084/img/'+info.headPic+'" onerror="this.src=\'http://118.25.102.29:8084/img/head/0.jpg\'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>'+
                         '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;" text="'+ info.nickname +'"></p></a>'+
@@ -766,10 +796,10 @@
                         '<div class="文章" style="float: left; text-indent:30px; margin-left: 50px;width:55%;">'+
                         '<p class="articleId" style="display: none">'+info.id+'</p>'+
                         '<p style="font-size: larger">标题：'+ info.title +'</p>'+
-                        '<p style="color:#888888;font-style:oblique;font-size: small;float: left;">'+info.content+'</p>'+
+                        '<p style="color:#888888;font-style:oblique;font-size: small;float: left;">'+content+'</p>'+
                         '</div>'+
                         '<div style="float: left; margin-left: 80px;margin-top: 20px;">'+
-                        '<img src="http://118.25.102.29:8084'+info.pics+'" height="140" width="200">'+
+                        '<img src="http://118.25.102.29:8084'+picture+'" height="140" width="200">'+
                         '</div>'+
                         '<br>';
                 }
@@ -797,15 +827,24 @@
                 $.ajax({
                     url:[[${session?.serviceUrl}]] + 'manage/getArticles',
                     type:'POST',
-                    data:{'page':page,'pageSize':pageNum},
+                    data: JSON.stringify({'currentPage':page,'pageSize':pageNum,'nowdays':nowdays, 'plate':plate}),
+                    contentType: 'application/json',
                     dataType:'JSON',
                     success:function (callback) {
                         var list = callback.data.list;
                         var str = '';
                         for(var i=0;i<list.length;i++){
                             var info = list[i];
+                            var picture = info.pics;
+                            if(picture.indexOf(",") != -1){
+                                picture = picture.split(",",1);
+                            }
+                            var content = info.content;
+                            if(content.length>200){
+                                content = content.substring(0,200);
+                            }
                             str +=
-                                    '<br>'+
+                                '<br>'+
                                 '<div style="clear: both;">'+
                                 '<img src="http://118.25.102.29:8084/img/'+info.headPic+'" onerror="this.src=\'http://118.25.102.29:8084/img/head/0.jpg\'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>'+
                                 '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;" text="'+ info.nickname +'"></p></a>'+
@@ -817,10 +856,10 @@
                                 '<div class="文章" style="float: left; text-indent:30px; margin-left: 50px;width:55%;">'+
                                 '<p class="articleId" style="display: none">'+info.id+'</p>'+
                                 '<p style="font-size: larger">标题：'+ info.title +'</p>'+
-                                '<p style="color:#888888;font-style:oblique;font-size: small;float: left;">'+info.content+'</p>'+
+                                '<p style="color:#888888;font-style:oblique;font-size: small;float: left;">'+content+'</p>'+
                                 '</div>'+
                                 '<div style="float: left; margin-left: 80px;margin-top: 20px;">'+
-                                '<img src="http://118.25.102.29:8084'+info.pics+'" height="140" width="200">'+
+                                '<img src="http://118.25.102.29:8084'+picture+'" height="140" width="200">'+
                                 '</div>'+
                                 '<br>';
                         }
@@ -831,7 +870,7 @@
                 })
             }
         });
-    });
+    }
 </script>
 <!-- js文件 -->
 <script src="http://common1.qyerstatic.com/bbs/js/index/index_js_btm_1954eb6a3dbe1143fea36b7629b9a0e1.js">
