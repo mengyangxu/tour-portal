@@ -67,7 +67,7 @@ public class ArticleController {
     //@Headers({"dataType: json"})
     @RequestMapping("/addArticle")
     @ResponseBody
-    public JsonResponse addArticle(@RequestParam("title") String title, @RequestParam String content, HttpSession session){
+    public JsonResponse addArticle(@RequestParam("title") String title, @RequestParam String content, @RequestParam Integer plate, HttpSession session){
         User user = (User)session.getAttribute("user");
         Article article = new Article();
         if(null==user){
@@ -79,6 +79,7 @@ public class ArticleController {
         }
         article.setTitle(title);
         article.setContent(content);
+        article.setPlate(plate);
         userService.addArticle(article);
         return new JsonResponse("");
     }
