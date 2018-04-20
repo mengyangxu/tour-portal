@@ -1,6 +1,7 @@
 package com.xmy.portal.service;
 
 import com.xmy.bean.bean.Article;
+import com.xmy.bean.bean.Plate;
 import com.xmy.bean.bean.User;
 import com.xmy.bean.common.Page;
 import com.xmy.bean.vo.ArticleInfo;
@@ -44,6 +45,9 @@ public interface UserService {
 
     @RequestMapping("/getAdverts")
     List<User> getAdverts();
+
+    @RequestMapping("/getPlates")
+    List<Plate> getPlates();
 
     //void saveIp(String ip);
 }

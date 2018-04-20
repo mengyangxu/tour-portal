@@ -1,6 +1,8 @@
 package com.xmy.portal.controller;
 
 
+import com.xmy.bean.bean.Article;
+import com.xmy.bean.bean.Plate;
 import com.xmy.bean.bean.User;
 import com.xmy.bean.common.Page;
 import com.xmy.bean.vo.ArticleInfo;
@@ -31,7 +33,7 @@ public class PageController {
     @RequestMapping("/index")
     public String index(HttpServletRequest request){
         Page page = null;
-        int currentPage = 1;
+        /*int currentPage = 1;
         if(null==request.getParameter("currentPage")){
             currentPage = 1;
         } else {
@@ -41,18 +43,20 @@ public class PageController {
         //校验登陆
         if(currentPage>1&&null==request.getSession().getAttribute("user")){
             return "redirect:"+ UrlStatic.indexUrl+"user/tologin";
-        }
+        }*/
 
-        page = new Page(pageSize,0,currentPage);
-        List<ArticleInfo> list = userService.getArticleInfo(page);
-        list = this.check(list);
+        //page = new Page(pageSize,0,currentPage);
+        //List<ArticleInfo> list = userService.getArticleInfo(page);
+        //list = this.check(list);
         List<User> adverts = userService.getAdverts();
-        int totalResult = userService.getArticleNum();
-        page = new Page(pageSize,totalResult,currentPage);
-        request.setAttribute("list", list);
+        List<Plate> plates = userService.getPlates();
+        //int totalResult = userService.getArticleNum();
+        //page = new Page(pageSize,totalResult,currentPage);
+        //request.setAttribute("list", list);
         request.setAttribute("adverts",adverts);
-        request.setAttribute("currentPage", currentPage);
-        request.setAttribute("totalPage",page.getTotalPage());
+        request.setAttribute("plates",plates);
+        //request.setAttribute("currentPage", currentPage);
+        //request.setAttribute("totalPage",page.getTotalPage());
         request.getSession().setAttribute("serviceUrl",UrlStatic.serviceUrl);
 
         return "index";
