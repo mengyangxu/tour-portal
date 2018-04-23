@@ -428,17 +428,22 @@
 <!-- 聊天script -->
 <script type="text/javascript" th:inline="javascript">
     var websocket = null;
-
-    $(function(){
-        var userId = [[${session?.user?.id}]];
-        if(null==userId||""==userId){
-            return;
-        }
+    var userId = [[${session?.user?.id}]];
+    if(null!=userId&&""!=userId){
         //判断当前浏览器是否支持WebSocket
         if ('WebSocket' in window) {
             websocket = new WebSocket("ws://localhost:8081/websocketTest/"+userId);
         } else {
             alert('当前浏览器 Not support websocket')
+        }
+    }
+
+
+
+    $(function(){
+        var userId = [[${session?.user?.id}]];
+        if(null==userId||""==userId){
+            return;
         }
         $.ajax({
             url: [[${session?.serviceUrl}]] + 'getChatList',
