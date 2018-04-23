@@ -84,4 +84,9 @@ public class ArticleController {
         return new JsonResponse("");
     }
 
+    public String articleDetail(@RequestParam("articleId")int articleId, HttpServletRequest req){
+        req.setAttribute("articleId",articleId);
+        return "article";
+    }
+
 }

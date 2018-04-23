@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>云游四海</title>
+    <link rel="shortcut icon" href="http://118.25.102.29:8084/img/long.jpg"/>
+	<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-dialog.js"></script>
+	<link rel="stylesheet" href="/css/bootstrap-dialog.css">
+
+	<style type="text/css">
+		a {
+			cursor:auto;
+		}
+	</style>
+</head>
+
+<body>
+<div>
+	<div >
+		<nav class="navbar navbar-inverse" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<p style="margin-top: 15px;color: #fcf8e3" th:inline="text">欢迎你，[[${session?.user?.nickname}]]!</p>
+				</div>
+				<div>
+					<ul class="nav navbar-nav">
+						<li><a href="/index">首页</a></li>
+						<li><a href="/my">我的主页</a></li>
+						<li class="dropdown navbar-nav">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								神游伙伴
+								<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu ">
+								<li><a href="http://jiudian.ctrip.cn/" target="_blank">携程</a></li>
+								<li><a href="http://www.tuniu.com/" target="_blank">途牛</a></li>
+								<li><a href="http://www.lvmama.com/" target="_blank">驴妈妈</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<div>
+		<div style="width:70%; float:left;">
+
+
+		</div>
+
+	</div>
+	<div style="width: 100%;"></div>
+
+	<!-- 模态框（评论） -->
+	<div class="modal fade" id="commentListModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						<label>评论区</label>
+					</h4>
+				</div>
+				<div class="modal-body" id="commentList"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					</button>
+					<button type="button" class="btn btn-primary" onclick="addComment();">
+						提交
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+</div>
+</body>
+<!-- 修改个人信息 -->
+<script type="text/javascript" th:inline="javascript">
+
+    $(function(){
+        $.ajax({
+            url:[[${session.serviceUrl}]]+'articleId',
+            data:{
+                articleId: articleId
+            },
+            dataType:'JSON',
+            type:'POST',
+            success:function(data){
+                if("200"==data.code){
+
+                }else {
+
+                }
+            },
+            error:function(){
+                $("#commentList").html('');
+                BootstrapDialog.show({
+                    type : BootstrapDialog.TYPE_DANGER,
+                    title : 'error ',
+                    message : '系统出错',
+                    onshown : function(dialogRef) {
+                        setTimeout(function() {
+                            dialogRef.close();
+                        }, 500);
+                    },
+                });
+            }
+        });
+    });
+
+    function commentList(id){
+        var articleId = id;
+        $("#commentListModel").modal('show');
+        $.ajax({
+            url:[[${session.serviceUrl}]]+'commentList',
+            data:{
+                articleId: articleId
+            },
+            dataType:'JSON',
+            type:'POST',
+            success:function(data){
+                if("200"==data.code){
+                    var list = data.data;
+                    var str = '';
+                    if(list.length>0){
+                        for(var i=0;i<list.length;i++){
+                            str += list[i].nickname+":" + list[i].content + '<a  style="float:right;margin-right:-5px;" onclick="deleteComment('+list[i].id +')">'+'删除'+"</a></br>";
+                        }
+                        $("#commentList").html(str);
+                    } else{
+                        $("#commentList").html('');
+                    }
+                }else {
+                    $("#commentList").html('');
+                }
+            },
+            error:function(){
+                $("#commentList").html('');
+                BootstrapDialog.show({
+                    type : BootstrapDialog.TYPE_DANGER,
+                    title : 'error ',
+                    message : '系统出错',
+                    onshown : function(dialogRef) {
+                        setTimeout(function() {
+                            dialogRef.close();
+                        }, 500);
+                    },
+                });
+            }
+        });
+    }
+
+
+
+</script>
+</html>
