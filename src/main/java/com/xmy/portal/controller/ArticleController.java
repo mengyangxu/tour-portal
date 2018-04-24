@@ -84,6 +84,7 @@ public class ArticleController {
         return new JsonResponse("");
     }
 
+    @RequestMapping("/article")
     public String articleDetail(@RequestParam("articleId")int articleId, HttpServletRequest req){
         req.setAttribute("articleId",articleId);
         return "article";
