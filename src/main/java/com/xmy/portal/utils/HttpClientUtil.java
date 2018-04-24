@@ -22,8 +22,8 @@ import java.util.logging.Level;
 import javax.net.ssl.SSLException;
 
 import org.apache.commons.codec.binary.Base32;
-import org.apache.commons.fileupload.MultipartStream;
-import org.apache.commons.fileupload.disk.DiskFileItem;
+/*import org.apache.commons.fileupload.MultipartStream;
+import org.apache.commons.fileupload.disk.DiskFileItem;*/
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
@@ -45,9 +45,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.mime.MultipartEntity;
+/*import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.entity.mime.content.StringBody;*/
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.LoggerFactory;
@@ -240,7 +240,7 @@ public class HttpClientUtil {
 	 * @param files
 	 * @return
 	 */
-	public String doPostRequestAndFile(String urlstr, Map<String, String> params,Map<String, MultipartFile> files) {
+	/*public String doPostRequestAndFile(String urlstr, Map<String, String> params,Map<String, MultipartFile> files) {
 		
 		org.apache.http.client.HttpClient httpclient = new DefaultHttpClient();
         HttpPost post = new HttpPost(urlstr);
@@ -316,7 +316,7 @@ public class HttpClientUtil {
         
          
 	}
-	
+	*/
 	/**
 	 * 忽略证书发送请求
 	 * @param scheme  http/https

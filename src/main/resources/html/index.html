@@ -286,12 +286,18 @@
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <label>板块：</label>
-                    <select class="form-control" style="width:200px;float: left" id="plateAdd">
-                        <option th:each="info, state:${plates}" th:value="${info.id}" th:text="${info.name}"/>
-                    </select>
+                    <div>
+                    <label>板块：</label><br>
+                        <select class="form-control" style="width:200px;float: left" id="plateAdd">
+                            <option>请选择</option>
+                            <option th:each="info, state:${plates}" th:value="${info.id}" th:text="${info.name}"/>
+                        </select>
+                    </div>
+                    <br><br>
+                    <div>
                     <label>内容：</label>
                     <input class="form-control" type="text" id="content">
+                    </div>
                 </div>
 
 
@@ -459,7 +465,6 @@
             }
         })
     });
-    //遍历聊天记录
     function chat(obj,fromId){
         $(obj).find("span").remove();
         var userId = [[${session?.user?.id}]];
@@ -499,7 +504,6 @@
                         }
                     }
                     $("#chatlog").html(str);
-                    $("#chatlog").scrollTop($("#chatlog")[0].scrollHeight);
                 } else {
 
                 }
@@ -598,7 +602,6 @@
             '</div>' +
             '</div>';
         $("#chatlog").append(str);
-        $("#chatlog").scrollTop($("#chatlog")[0].scrollHeight);
         $("#chatContent").val('');
     }
     //接收消息
@@ -780,7 +783,7 @@
                         '<br>'+
                         '<div style="clear: both;">'+
                         '<img src="http://118.25.102.29:8084/img/'+info.headPic+'" onerror="this.src=\'http://118.25.102.29:8084/img/head/0.jpg\'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>'+
-                        '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;">'+info.nickname+'</p></a>'+
+                        '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;" text="'+ info.nickname +'"></p></a>'+
                         '<p style="float: left;margin-left: 20px; color: #D0D0D0;">在'+ info.address +' 发布的</p>'+
                         '<p style="float: left;margin-left: 20px; color: #D0D0D0;">'+ info.zanNum +'人赞</p>'+
                         '<img src="http://118.25.102.29:8084/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 40px;margin-top: -25px;"/>'+
@@ -789,7 +792,7 @@
                         '<div class="文章" style="float: left; text-indent:30px; margin-left: 50px;width:55%;">'+
                         '<p class="articleId" style="display: none">'+info.id+'</p>'+
                         '<p style="font-size: larger">标题：'+ info.title +'</p>'+
-                        '<a href="/article?articleId='+info.id+'" style="color:#888888;font-style:oblique;font-size: small;float: left;">'+content+'...</a>'+
+                        '<p style="color:#888888;font-style:oblique;font-size: small;float: left;">'+content+'</p>'+
                         '</div>'+
                         '<div style="float: left; margin-left: 80px;margin-top: 20px;">'+
                         '<img src="http://118.25.102.29:8084'+picture+'" height="140" width="200">'+
@@ -840,7 +843,7 @@
                                 '<br>'+
                                 '<div style="clear: both;">'+
                                 '<img src="http://118.25.102.29:8084/img/'+info.headPic+'" onerror="this.src=\'http://118.25.102.29:8084/img/head/0.jpg\'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>'+
-                                '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;">'+info.nickname+'</p></a>'+
+                                '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;" text="'+ info.nickname +'"></p></a>'+
                                 '<p style="float: left;margin-left: 20px; color: #D0D0D0;">在'+ info.address +' 发布的</p>'+
                                 '<p style="float: left;margin-left: 20px; color: #D0D0D0;">'+ info.zanNum +'人赞</p>'+
                                 '<img src="http://118.25.102.29:8084/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 40px;margin-top: -25px;"/>'+
@@ -849,7 +852,7 @@
                                 '<div class="文章" style="float: left; text-indent:30px; margin-left: 50px;width:55%;">'+
                                 '<p class="articleId" style="display: none">'+info.id+'</p>'+
                                 '<p style="font-size: larger">标题：'+ info.title +'</p>'+
-                                '<a href="/article?articleId='+ info.id+' style="color:#888888;font-style:oblique;font-size: small;float: left;">'+content+'...</a>'+
+                                '<p style="color:#888888;font-style:oblique;font-size: small;float: left;">'+content+'</p>'+
                                 '</div>'+
                                 '<div style="float: left; margin-left: 80px;margin-top: 20px;">'+
                                 '<img src="http://118.25.102.29:8084'+picture+'" height="140" width="200">'+
