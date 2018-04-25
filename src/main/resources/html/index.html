@@ -418,16 +418,16 @@
                         '<br>'+
                         '<div style="clear: both;">'+
                         '<img src="http://118.25.102.29:8084/img/'+info.headPic+'" onerror="this.src=\'http://118.25.102.29:8084/img/head/0.jpg\'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>'+
-                        '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;" text="'+ info.nickname +'"></p></a>'+
+                        '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;">'+info.nickname+'</p></a>'+
                         '<p style="float: left;margin-left: 20px; color: #D0D0D0;">在'+ info.address +' 发布的</p>'+
                         '<p style="float: left;margin-left: 20px; color: #D0D0D0;">'+ info.zanNum +'人赞</p>'+
                         '<img src="http://118.25.102.29:8084/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 40px;margin-top: -25px;"/>'+
                         //'<button style="margin-left: 200px;" class="btn btn-primary btn-lg" data-toggle="modal" onclick="commentList(this);">评论</button>'+
-                        '</div>'+
+                        '</div><br>'+
                         '<div class="文章" style="float: left; text-indent:30px; margin-left: 50px;width:55%;">'+
                         '<p class="articleId" style="display: none">'+info.id+'</p>'+
                         '<p style="font-size: larger">标题：'+ info.title +'</p>'+
-                        '<p style="color:#888888;font-style:oblique;font-size: small;float: left;">'+content+'</p>'+
+                        '<a href="/article?articleId='+info.id+'" style="color:#888888;font-style:oblique;font-size: small;float: left;">'+content+'...</a>'+
                         '</div>'+
                         '<div style="float: left; margin-left: 80px;margin-top: 20px;">'+
                         '<img src="http://118.25.102.29:8084'+picture+'" height="140" width="200">'+
@@ -478,16 +478,16 @@
                                 '<br>'+
                                 '<div style="clear: both;">'+
                                 '<img src="http://118.25.102.29:8084/img/'+info.headPic+'" onerror="this.src=\'http://118.25.102.29:8084/img/head/0.jpg\'" class="img-circle" style="width: 60px;float: left;margin-top: -20px;"/>'+
-                                '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;" text="'+ info.nickname +'"></p></a>'+
+                                '<a href="/other?userId='+info.userId+'" ><p style="float: left;margin-left: 20px;">'+info.nickname+'</p></a>'+
                                 '<p style="float: left;margin-left: 20px; color: #D0D0D0;">在'+ info.address +' 发布的</p>'+
                                 '<p style="float: left;margin-left: 20px; color: #D0D0D0;">'+ info.zanNum +'人赞</p>'+
                                 '<img src="http://118.25.102.29:8084/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 40px;margin-top: -25px;"/>'+
                                 '<button style="margin-left: 200px;" class="btn btn-primary btn-lg" data-toggle="modal" onclick="commentList(this);">评论</button>'+
-                                '</div>'+
+                                '</div><br>'+
                                 '<div class="文章" style="float: left; text-indent:30px; margin-left: 50px;width:55%;">'+
                                 '<p class="articleId" style="display: none">'+info.id+'</p>'+
                                 '<p style="font-size: larger">标题：'+ info.title +'</p>'+
-                                '<p style="color:#888888;font-style:oblique;font-size: small;float: left;">'+content+'</p>'+
+                                '<a href="/article?articleId='+info.id+'" style="color:#888888;font-style:oblique;font-size: small;float: left;">'+content+'...</a>'+
                                 '</div>'+
                                 '<div style="float: left; margin-left: 80px;margin-top: 20px;">'+
                                 '<img src="http://118.25.102.29:8084'+picture+'" height="140" width="200">'+
