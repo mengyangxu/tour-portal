@@ -130,7 +130,10 @@
 					$(".carousel-indicators").html(str1);
 					$(".carousel-inner").html(str2);
 					//文章
-					$("#articleContent .panel-heading").text(article.title);
+					var str = '<p style="float: left;">'+article.title+'</p>'+
+						'<p id="zan" style="float: left;margin-left: 20px; color: #D0D0D0;">'+ article.zanNum +'</p><p style="float: left;">人赞</p>'+
+                        '<a onclick="dianZan();" style="cursor: auto"><img src="http://118.25.102.29:8084/img/ico/zan.jpg" style="width: 20px;height: 20px; margin-left: 40px;margin-top: -10px;"/></a>';
+					$("#articleContent .panel-heading").html(str);
 					$("#articleContent .panel-body").text(article.content);
 
 
@@ -263,6 +266,23 @@
 
     }
 
+    //点赞
+	function dianZan(){
+        $.ajax({
+            url: [[${session.serviceUrl}]] + 'laud',
+            data: {
+                articleId: articleId+''
+            },
+            dataType: 'JSON',
+            type: 'POST',
+            success: function (data) {
+				if("200"==data.code){
+				    var num = $("#zan").text();
+				    $("#zan").text(Number(num)+1);
+				}
+            }
+        })
+	}
 
 
 </script>
