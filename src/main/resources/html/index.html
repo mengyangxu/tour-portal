@@ -6,32 +6,34 @@
     <link rel="shortcut icon" href="http://118.25.102.29:8084/img/long.jpg"/>
 
     <link rel="stylesheet" href="/css/qyou.css">
-    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/fileinput.min.css">
     <link rel="stylesheet" href="/css/chat.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-dialog.css">
+    <link rel="stylesheet" href="/css/fileinput.min.css">
 
-    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap-dialog.js"></script>
+    <script src="/js/bootstrap-paginator.js"></script>
 
     <script src="/js/fileinput.min.js"></script>
     <script src="/js/zh.js"></script>
-    <link rel="stylesheet" href="/css/bootstrap-dialog.css">
-    <script src="/js/bootstrap-dialog.js"></script>
-    <script src="/js/bootstrap-paginator.js"></script>
+
     <style  type="text/css">
         a{
             cursor:pointer;
         }
     </style>
+
+
 </head>
 
-<body style="">
+<body>
 <div id="idxRootWrap">
     <!-- 头部调用文件 -->
-    <link rel="stylesheet"
-          href="http://static.qyer.com/models/common/component/headfoot/dist/headerfoot_black.min-fe3dcfc42c1fa73210caa4977af7b29a.css">
-    <script src="http://static.qyer.com/models/common/component/headfoot/dist/headerfoot_black.min-2dd8855dca23c6459c082e79dccf6aa1.js"></script>
+    <!--<link rel="stylesheet"
+          href="http://static.qyer.com/models/common/component/headfoot/dist/headerfoot_black.min-fe3dcfc42c1fa73210caa4977af7b29a.css">-->
+   <!-- <script src="http://static.qyer.com/models/common/component/headfoot/dist/headerfoot_black.min-2dd8855dca23c6459c082e79dccf6aa1.js"></script>-->
     <div >
         <nav class="navbar navbar-inverse" role="navigation">
             <div class="container-fluid">
@@ -54,7 +56,7 @@
                                 <li><a href="http://www.lvmama.com/" target="_blank">驴妈妈</a></li>
                             </ul>
                         </li>
-                        <li class="dropdown navbar-nav">
+                        <li class="dropdown navbar-nav" onclick="resetColor();" id="resetColor">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 消息
                                 <b class="caret"></b>
@@ -318,6 +320,7 @@
 
 </div>
 
+<!--轮播图-->
 <script type="text/javascript">
     //清除模态框页面缓存
     $("#toCreateArticle").on("hidden.bs.modal", function() {
@@ -507,7 +510,7 @@
 <!-- 聊天script -->
 <script type="text/javascript" th:inline="javascript">
     var websocket = null;
-
+    var resetColorTimer = null;
     $(function(){
         var userId = [[${session?.user?.id}]];
         if(null==userId||""==userId){
@@ -516,9 +519,55 @@
         //判断当前浏览器是否支持WebSocket
         if ('WebSocket' in window) {
             websocket = new WebSocket("ws://localhost:8081/websocketTest/"+userId);
+            socketFunc(userId);
         } else {
             alert('当前浏览器 Not support websocket')
         }
+        chatTable(userId);
+    });
+
+    function socketFunc(userId) {
+        //连接发生错误的回调方法
+        websocket.onerror = function() {
+            alert("WebSocket连接发生错误");
+        }
+        //连接成功建立的回调方法
+        websocket.onopen = function() {
+            //alert("WebSocket连接成功");
+        }
+        //接收到消息的回调方法
+        websocket.onmessage = function(event) {
+            //debugger
+            var messageJson=eval("("+event.data+")");
+            if(messageJson.messageType=="message"){
+                chatReceive(messageJson.data,messageJson.fromId);
+                chatTable(userId);
+                chat2(messageJson.fromId);
+                /*var resetNum = 0;
+                resetColorTimer = setInterval(function(){
+                    resetNum++;
+                    if(resetNum%2==0) {
+                        $("#resetColor").css("background-color", "#DDFF77");
+                    }else {
+                        $("#resetColor").css("background-color", "");
+                    }
+                },500);*/
+            }
+            if(messageJson.messageType=="onlineCount"){
+                //document.getElementById('onlineCount').innerHTML=messageJson.data;
+            }
+
+        }
+        //连接关闭的回调方法
+        websocket.onclose = function() {
+            // alert("WebSocket连接关闭");
+        }
+        //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+        window.onbeforeunload = function() {
+            closeWebSocket();
+        }
+    }
+    function chatTable(userId){
         $.ajax({
             url: [[${session?.serviceUrl}]] + 'getChatList',
             data: {
@@ -543,11 +592,13 @@
                 }
             }
         })
-    });
+    }
+    //打开消息框
     function chat(obj,fromId){
         $(obj).find("span").remove();
         var userId = [[${session?.user?.id}]];
         var fromnick = $(obj).text();
+        $("#chatBox").modal('show');
         $.ajax({
             url: [[${session?.serviceUrl}]] + 'getChatLog',
             data: {
@@ -583,16 +634,25 @@
                         }
                     }
                     $("#chatlog").html(str);
+                    //$("#chatlog").scrollTop=$("#chatlog").offsetHeight -$("#chatlog").clientHeight;
+                    //$("#chatlog").scrollTop($("#chatlog").scrollHeight);
+                    //document.getElementById('chatlog') = document.getElementById('chatlog').scrollHeight;
+                    setTimeout(function () {
+                        var div = document.getElementById('chatlog');
+                        div.scrollTop =div.scrollHeight;
+                    }, 100);
+
                 } else {
 
                 }
             }
         })
-        $("#chatBox").modal('show');
     }
+    //别人发来消息弹出消息框
     function chat2(fromId){
         var fromId2 = Number(fromId);
         var userId = [[${session?.user?.id}]];
+        $("#chatBox").modal('show');
         $.ajax({
             url: [[${session?.serviceUrl}]] + 'getChatLog',
             data: {
@@ -625,44 +685,23 @@
                                 '<div class="speech left"> ' + logList[i].content +
                                 '</div>' +
                                 '</div>'
+                            $("#chatFromNickname").text(logList[i].fromnick);
                         }
                     }
                     $("#chatlog").html(str);
+                    setTimeout(function () {
+                        var div = document.getElementById('chatlog');
+                        div.scrollTop =div.scrollHeight;
+                    }, 100);
+
                 } else {
 
                 }
             }
         })
-        $("#chatBox").modal('show');
-    }
-    //连接发生错误的回调方法
-    websocket.onerror = function() {
-        alert("WebSocket连接发生错误");
-    };
-    //连接成功建立的回调方法
-    websocket.onopen = function() {
-        //alert("WebSocket连接成功");
-    }
-    //接收到消息的回调方法
-    websocket.onmessage = function(event) {
-        debugger
-        var messageJson=eval("("+event.data+")");
-        if(messageJson.messageType=="message"){
-            chatReceive(messageJson.data,messageJson.fromId);
-        }
-        if(messageJson.messageType=="onlineCount"){
-            //document.getElementById('onlineCount').innerHTML=messageJson.data;
-        }
 
     }
-    //连接关闭的回调方法
-    websocket.onclose = function() {
-        // alert("WebSocket连接关闭");
-    }
-    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-    window.onbeforeunload = function() {
-        closeWebSocket();
-    }
+
     //关闭WebSocket连接
     function closeWebSocket() {
         websocket.close();
@@ -681,6 +720,9 @@
             '</div>' +
             '</div>';
         $("#chatlog").append(str);
+        //$("#chatlog").scrollTop = $("#chatlog").scrollHeight;
+        var div = document.getElementById('chatlog');
+        div.scrollTop =div.scrollHeight;
         $("#chatContent").val('');
     }
     //接收消息
@@ -689,7 +731,15 @@
         var str = '<div class="leftd">' + $(".leftd").eq(0).html() + '</div>';
         $("#chatlog").append(str);
         $("#chatlog").find(".speech.left:last").text(mes);
+        var div = document.getElementById('chatlog');
+        div.scrollTop =div.scrollHeight;
     }
+
+
+    function resetColor(){
+        //clearInterval(resetColorTimer);
+    }
+
 </script>
 
 <!--文章-->
@@ -888,9 +938,7 @@
 </script>
 
 <!-- js文件 -->
-<script src="http://common1.qyerstatic.com/bbs/js/index/index_js_btm_1954eb6a3dbe1143fea36b7629b9a0e1.js">
-
-</script>
+<!--<script src="http://common1.qyerstatic.com/bbs/js/index/index_js_btm_1954eb6a3dbe1143fea36b7629b9a0e1.js">-->
 
 </body>
 </html>

@@ -1,5 +1,6 @@
 
 <!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -32,6 +33,7 @@
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
 	
 	<link rel="stylesheet" href="../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/bootstrap-dialog.css">
 	<link rel="stylesheet" href="../css/animate.css">
 	<link rel="stylesheet" href="../css/style.css">
 
@@ -54,16 +56,16 @@
 					<!-- Start Sign In Form -->
 					<form action="#" class="fh5co-form animate-box" data-animate-effect="fadeInLeft">
 						<h2>Sign Up</h2>
-						<div class="form-group">
+						<!--<div class="form-group">
 							<div class="alert alert-success" role="alert">Your info has been saved.</div>
+						</div>-->
+						<div class="form-group">
+							<label for="nickname" class="sr-only">Name</label>
+							<input type="text" class="form-control" id="nickname" placeholder="Name" autocomplete="off">
 						</div>
 						<div class="form-group">
-							<label for="name" class="sr-only">Name</label>
-							<input type="text" class="form-control" id="name" placeholder="Name" autocomplete="off">
-						</div>
-						<div class="form-group">
-							<label for="email" class="sr-only">Email</label>
-							<input type="email" class="form-control" id="email" placeholder="Email" autocomplete="off">
+							<label for="username" class="sr-only">Name</label>
+							<input type="text" class="form-control" id="username" placeholder="Username" autocomplete="off">
 						</div>
 						<div class="form-group">
 							<label for="password" class="sr-only">Password</label>
@@ -74,13 +76,20 @@
 							<input type="password" class="form-control" id="re-password" placeholder="Re-type Password" autocomplete="off">
 						</div>
 						<div class="form-group">
+							<label for="sex" class="sr-only">Sex</label>
+							<select class="form-control" id="sex">
+								<option value="1">男</option>
+								<option value="2">女</option>
+							</select>
+						</div>
+						<div class="form-group">
 							<label for="remember"><input type="checkbox" id="remember"> Remember Me</label>
 						</div>
 						<div class="form-group">
-							<p>Already registered? <a href="tologin">Sign In</a></p>
+							<p>Already registered? <a href="/user/tologin">Sign In</a></p>
 						</div>
 						<div class="form-group">
-							<input type="submit" value="Sign Up" class="btn btn-primary">
+							<input type="button" value="Sign Up" class="btn btn-primary" onclick="addUser();">
 						</div>
 					</form>
 					<!-- END Sign In Form -->
@@ -92,11 +101,63 @@
 				<div class="col-md-12 text-center"><p><small>&copy; All Rights Reserved. More Templates <a href="http://www.cssmoban.com/" target="_blank" title="模板之家">模板之家</a> - Collect from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">网页模板</a></small></p></div>
 			</div>
 		</div>
-	
+	<script type="text/javascript"  th:inline="javascript">
+		function addUser(){
+            var nickname = $("#nickname").val();
+            var username = $("#username").val();
+            var password = $("#password").val();
+            var sex = $("#sex").val();
+            var formdata = {
+                'nickname': nickname,
+                'username': username,
+                'password': password,
+				'sex':sex
+            }
+            $.ajax({
+                url: [[${session?.serviceUrl}]] + 'register',
+                type: 'POST',
+                async: false,
+                data: JSON.stringify(formdata),
+                contentType: 'application/json;charset=utf-8',
+                dataType: 'JSON',
+                success: function (callback) {
+                    if(callback.code=='200'){
+                        BootstrapDialog.show({
+                            type : BootstrapDialog.TYPE_SUCCESS,
+                            title : 'success',
+                            message : '注册成功',
+                            onshown : function(dialogRef) {
+                                setTimeout(function() {
+                                    dialogRef.close();
+                                    window.location.href="/tologin";
+                                }, 500);
+                            }
+                        });
+                    }else {
+                        BootstrapDialog.show({
+                            type : BootstrapDialog.TYPE_DANGER,
+                            title : 'error ',
+                            message : '用户名已经被占用',
+                            buttons : [ {// 设置关闭按钮
+                                label : '确定',
+                                action : function(dialogItself) {
+                                    dialogItself.close();
+                                }
+                            } ]
+                        });
+                    }
+                }
+            })
+		}
+
+
+
+	</script>
 	<!-- jQuery -->
 	<script src="../js/jquery.min.js"></script>
 	<!-- Bootstrap -->
 	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/bootstrap-dialog.js"></script>
 	<!-- Placeholder -->
 	<script src="../js/jquery.placeholder.min.js"></script>
 	<!-- Waypoints -->

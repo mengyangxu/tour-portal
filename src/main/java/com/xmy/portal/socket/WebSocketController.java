@@ -129,7 +129,7 @@ public class WebSocketController {
                         MessageDto md=new MessageDto();
                         md.setMessageType("message");
                         md.setData(content);
-                        md.setFromId(targetname);
+                        md.setFromId(name);
                         entry.getValue().sendMessage(gson.toJson(md));
                         flag = 1;
 

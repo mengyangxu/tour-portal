@@ -86,7 +86,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title" id="chatFromNickname"></h4>
 				</div>
-				<div class="modal-body" id="chatlog">
+				<div class="modal-body" id="chatlog"  style="height:300px;overflow-y:auto;">
 					<div class="leftd">
                         <span ng-class="leftd_h">
                             <img ng-src="./img/c_pic.pn" />
@@ -221,7 +221,7 @@
         }
         //连接关闭的回调方法
         websocket.onclose = function() {
-            alert("WebSocket连接关闭");
+            //alert("WebSocket连接关闭");
         }
         //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
         window.onbeforeunload = function() {
@@ -249,16 +249,21 @@
             '</div>';
         $("#chatlog").append(str);
         $("#chatContent").val('');
+		var div = document.getElementById('chatlog');
+		div.scrollTop =div.scrollHeight;
     }
     //接收消息
-    function chatReceive(fromId,mes){
+    function chatReceive(mes,fromId){
         //chat2(fromId);
         var str = '<div class="leftd">' + $(".leftd").eq(0).html() + '</div>';
         $("#chatlog").append(str);
         $("#chatlog").find(".speech.left:last").text(mes);
+		var div = document.getElementById('chatlog');
+		div.scrollTop =div.scrollHeight;
     }
 
     function chat(otherId, userId){
+        $("#chatBox").modal('show');
         $.ajax({
             url: [[${session.serviceUrl}]] + 'getChatLog',
             data: {
@@ -294,12 +299,19 @@
                         }
                     }
                     $("#chatlog").html(str);
+
+                    setTimeout(function () {
+                        var div = document.getElementById('chatlog');
+                        div.scrollTop =div.scrollHeight;
+                    }, 100);
+
                 } else {
 
                 }
             }
         })
-        $("#chatBox").modal('show');
+
+
     }
 
 </script>

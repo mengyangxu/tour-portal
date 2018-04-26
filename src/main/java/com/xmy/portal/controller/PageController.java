@@ -76,6 +76,12 @@ public class PageController {
     public String other(HttpSession session, HttpServletRequest request){
         String id = request.getParameter("userId").toString();
         int userId = Integer.valueOf(id);
+
+        //判断是不是自己
+        User user = (User)session.getAttribute("user");
+        if(user.getId()==userId){
+            return "redirect:/my";
+        }
         List<ArticleInfo> list = userService.getArticleInfoById(userId);
         User uu = userService.getById(userId);
         request.setAttribute("list",list);
