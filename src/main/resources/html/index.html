@@ -31,8 +31,8 @@
 <body>
 <div id="idxRootWrap">
     <!-- 头部调用文件 -->
-    <!--<link rel="stylesheet"
-          href="http://static.qyer.com/models/common/component/headfoot/dist/headerfoot_black.min-fe3dcfc42c1fa73210caa4977af7b29a.css">-->
+    <link rel="stylesheet"
+          href="http://static.qyer.com/models/common/component/headfoot/dist/headerfoot_black.min-fe3dcfc42c1fa73210caa4977af7b29a.css">
    <!-- <script src="http://static.qyer.com/models/common/component/headfoot/dist/headerfoot_black.min-2dd8855dca23c6459c082e79dccf6aa1.js"></script>-->
     <div >
         <nav class="navbar navbar-inverse" role="navigation">
@@ -91,17 +91,17 @@
                 <div th:each="info, state: ${adverts}">
                     <div th:class="${state.index==1}? 'cn-slide cszdx':'cn-slide'">
                         <div class="cns-inner">
-                            <a href="http://bbs.qyer.com/thread-2893447-1.html" target="_blank" class="cs-cover"
+                            <a target="_blank" class="cs-cover"
                                data-bn-ipg="bbs-index-top-pic-1"><img
                                     th:src="@{${info.backgroundPic}}"
                                     alt="背包去关西寻找安藤忠雄的建筑名作，只因一场莫名其妙的梦"></a>
                             <div class="cs-co">
-                                <a href="http://www.qyer.com/u/1063325" target="_blank" class="cs-userpic"
+                                <a target="_blank" class="cs-userpic"
                                    data-bn-ipg="bbs-index-top-writerPic-1"><img
                                         th:src="@{'/img'+${info.headPic}}" alt="荒梁"></a>
                                 <p class="cs-unw"><a href="http://www.qyer.com/u/1063325" target="_blank"
                                                      data-bn-ipg="bbs-index-top-writerName-1" th:text="${info.nickname}"></a></p>
-                                <a href="http://bbs.qyer.com/thread-2893447-1.html" target="_blank" class="cs-title"
+                                <a target="_blank" class="cs-title"
                                    data-countlen="0" data-bn-ipg="bbs-index-top-title-1" th:text="${info.backgroundAlt}"></a>
                             </div>
                         </div>
@@ -109,31 +109,31 @@
                 </div>
                 <ul class="cn-sy" th:each="info, state: ${adverts}">
                     <li class="">
-                        <a href="http://bbs.qyer.com/thread-2893447-1.html" target="_blank" class="csl-i"
+                        <a target="_blank" class="csl-i"
                            data-bn-ipg="bbs-index-top-icon-1"><span class="csli-span"><img
                                src="http://118.25.102.29:8084/img/101.jpg"></span></a><a
-                            href="http://bbs.qyer.com/thread-2893447-1.html" class="csl-b" target="_blank"></a>
+                             class="csl-b" target="_blank"></a>
                     </li>
                     <li class="">
-                        <a href="http://bbs.qyer.com/thread-2886219-1.html" target="_blank" class="csl-i"
+                        <a target="_blank" class="csl-i"
                            data-bn-ipg="bbs-index-top-icon-2"><span class="csli-span"><img
                                 src="http://118.25.102.29:8084/img/102.jpg"></span></a><a
-                            href="http://bbs.qyer.com/thread-2886219-1.html" class="csl-b" target="_blank"></a>
+                            class="csl-b" target="_blank"></a>
                     </li>
                     <li class="">
-                        <a href="http://bbs.qyer.com/thread-2894887-1.html" target="_blank" class="csl-i"
+                        <a target="_blank" class="csl-i"
                            data-bn-ipg="bbs-index-top-icon-3"><span class="csli-span"><img
                                 src="http://118.25.102.29:8084/img/103.jpg"></span></a><a
-                            href="http://bbs.qyer.com/thread-2894887-1.html" class="csl-b" target="_blank"></a>
+                             class="csl-b" target="_blank"></a>
                     </li>
                     <li class="">
-                        <a href="http://bbs.qyer.com/thread-2823521-1.html" target="_blank" class="csl-i"
+                        <a target="_blank" class="csl-i"
                            data-bn-ipg="bbs-index-top-icon-4"><span class="csli-span"><img
                                 src="http://118.25.102.29:8084/img/104.jpg"></span></a><a
                             href="http://bbs.qyer.com/thread-2823521-1.html" class="csl-b" target="_blank"></a>
                     </li>
                     <li class="">
-                        <a href="http://bbs.qyer.com/thread-2893449-1.html" target="_blank" class="csl-i"
+                        <a target="_blank" class="csl-i"
                            data-bn-ipg="bbs-index-top-icon-5"><span class="csli-span"><img
                                 src="http://118.25.102.29:8084/img/105.jpg"></span></a><a
                             href="http://bbs.qyer.com/thread-2893449-1.html" class="csl-b" target="_blank"></a>
@@ -179,7 +179,7 @@
         <div class="content">
             <p class="nav">
                 <a href="http://www.qyer.com/htmlpages/about.html" target="_blank" rel="nofollow"
-                   data-bn-ipg="foot-about-1">穷游简介</a>
+                   data-bn-ipg="foot-about-1">云游简介</a>
                 <a href="http://www.qyer.com/partner/" target="_blank" rel="nofollow"
                    data-bn-ipg="foot-about-3">合作伙伴</a>
                 <a href="http://www.qyer.com/job/" target="_blank" rel="nofollow" data-bn-ipg="foot-join-1">加入我们</a>
@@ -199,7 +199,7 @@
                    data-bn-ipg="foot-about-2">联系我们</a>
             </p>
             <p class="info">
-                2004-2018 © 穷游网® qyer.com All rights reserved. Version v5.57 京ICP备12003524号 京公网安备11010102001935号
+                2004-2018 © 云游网® qyer.com All rights reserved. Version v5.57 京ICP备12003524号 京公网安备11010102001935号
                 京ICP证140673号
                 <a target="_blank" style="color:inherit;" href="http://static.qyer.com/images/yyzz.jpg">营业执照</a>
                 <a target="_blank" style="color:inherit;" href="http://static.qyer.com/images/jyxkz.jpg">经营许可证</a>
