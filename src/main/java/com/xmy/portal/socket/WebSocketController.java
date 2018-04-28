@@ -13,8 +13,6 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import com.google.gson.Gson;
-import com.xmy.portal.redis.RedisService;
-import com.xmy.portal.service.ChatService;
 import com.xmy.portal.utils.HttpClientUtil;
 import com.xmy.portal.utils.UrlStatic;
 import org.springframework.context.ApplicationContext;
