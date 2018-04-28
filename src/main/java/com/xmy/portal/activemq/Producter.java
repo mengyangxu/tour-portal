@@ -41,6 +41,9 @@ public class Producter {
 
     public void sendMessage(String disname, String message){
         try {
+            if(null==session){
+                this.init();
+            }
             //创建一个消息队列
             Queue queue = session.createQueue(disname);
             //消息生产者

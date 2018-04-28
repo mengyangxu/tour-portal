@@ -2,6 +2,7 @@ package com.xmy.portal.controller;
 
 
 import com.xmy.bean.bean.User;
+import com.xmy.portal.activemq.Producter;
 import com.xmy.portal.service.UserService;
 import com.xmy.portal.utils.JsonResponse;
 import com.xmy.portal.utils.UrlStatic;
@@ -46,6 +47,8 @@ public class UserController {
         User user = userService.login(username, password);
 
         if(null!=user){
+
+            new Producter().sendMessage("loginIP","");
             session.setAttribute("user",user);
 
             return  new JsonResponse(UrlStatic.indexUrl+"index");
